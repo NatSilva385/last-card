@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/coringa_c.png-16dc780c0ca1b98bee424b505bb6c75b.stex"
+path="res://.import/coringa_d_c.png-a51c4a3e3dc219bc6233677315317204.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/texture/numeros/padrao/coringa_c.png"
-dest_files=[ "res://.import/coringa_c.png-16dc780c0ca1b98bee424b505bb6c75b.stex" ]
+source_file="res://assets/texture/numeros/padrao/coringa_d_c.png"
+dest_files=[ "res://.import/coringa_d_c.png-a51c4a3e3dc219bc6233677315317204.stex" ]
 
 [params]
 

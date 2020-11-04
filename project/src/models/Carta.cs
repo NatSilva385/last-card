@@ -18,7 +18,7 @@ namespace project.src.models
     {
         SEMVALOR,
         UM,
-        DOI,
+        DOIS,
         TRES,
         QUATRO,
         CINCO,
@@ -26,11 +26,11 @@ namespace project.src.models
         SETE,
         OITO,
         NOVE,
-        MAISDOIS,
+        MAIS_DOIS,
         BLOQUEAR,
         INVERTER,
         CORINGA,
-        CORINGAMAISQUATRO
+        CORINGA_MAIS_QUATRO
     }
 
     public enum SHADER_CARTA_FRENTE

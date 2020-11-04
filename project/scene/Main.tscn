@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://scene/main_enviroment.tres" type="Environment" id=1]
+[ext_resource path="res://scene/Baralho.tscn" type="PackedScene" id=2]
 
 [node name="Main" type="Spatial"]
 
@@ -12,3 +13,9 @@ transform = Transform( 1, 0, 0, 0, -0.642787, 0.766045, 0, -0.766045, -0.642787,
 light_energy = 2.0
 shadow_enabled = true
 shadow_color = Color( 0.6, 0.6, 0.6, 1 )
+
+[node name="Baralho" parent="." instance=ExtResource( 2 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.969706, 0 )
+
+[node name="Camera" type="Camera" parent="."]
+transform = Transform( 1, 0, 0, 0, 0.997086, -0.0762839, 0, 0.0762839, 0.997086, 6.94539, 7.19034, 10.1825 )
