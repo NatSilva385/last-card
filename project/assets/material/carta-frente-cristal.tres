@@ -1,0 +1,128 @@
+[gd_resource type="ShaderMaterial" load_steps=13 format=2]
+
+[ext_resource path="res://assets/texture/carta-padrao.png" type="Texture" id=1]
+
+[sub_resource type="VisualShaderNodeScalarUniform" id=1]
+uniform_name = "carta_rugosidade"
+
+[sub_resource type="VisualShaderNodeScalarOp" id=2]
+operator = 2
+
+[sub_resource type="VisualShaderNodeTexture" id=3]
+texture = ExtResource( 1 )
+
+[sub_resource type="VisualShaderNodeScalarFunc" id=4]
+function = 31
+
+[sub_resource type="VisualShaderNodeColorUniform" id=5]
+uniform_name = "carta_cor"
+
+[sub_resource type="VisualShaderNodeVectorOp" id=6]
+operator = 6
+
+[sub_resource type="VisualShaderNodeScalarUniform" id=7]
+uniform_name = "carta_alfa"
+
+[sub_resource type="VisualShaderNodeScalarOp" id=8]
+operator = 2
+
+[sub_resource type="VisualShaderNodeScalarUniform" id=9]
+uniform_name = "carta_metalico"
+
+[sub_resource type="VisualShaderNodeScalarOp" id=10]
+operator = 2
+
+[sub_resource type="VisualShader" id=11]
+code = "shader_type spatial;
+render_mode specular_schlick_ggx;
+
+uniform vec4 carta_cor : hint_color;
+uniform sampler2D tex_frg_2;
+uniform float carta_alfa;
+uniform float carta_metalico;
+uniform float carta_rugosidade;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// ColorUniform:4
+	vec3 n_out4p0 = carta_cor.rgb;
+	float n_out4p1 = carta_cor.a;
+
+// Texture:2
+	vec4 tex_frg_2_read = texture(tex_frg_2, UV.xy);
+	vec3 n_out2p0 = tex_frg_2_read.rgb;
+	float n_out2p1 = tex_frg_2_read.a;
+
+// ScalarFunc:3
+	float n_out3p0 = 1.0 - dot(n_out2p0, vec3(0.333333, 0.333333, 0.333333));
+
+// VectorOp:5
+	vec3 n_out5p0 = max(n_out4p0, vec3(n_out3p0));
+
+// ScalarUniform:6
+	float n_out6p0 = carta_alfa;
+
+// ScalarOp:7
+	float n_out7p0 = dot(n_out2p0, vec3(0.333333, 0.333333, 0.333333)) * n_out6p0;
+
+// ScalarUniform:8
+	float n_out8p0 = carta_metalico;
+
+// ScalarOp:9
+	float n_out9p0 = n_out3p0 * n_out8p0;
+
+// ScalarUniform:10
+	float n_out10p0 = carta_rugosidade;
+
+// ScalarOp:11
+	float n_out11p0 = n_out3p0 * n_out10p0;
+
+// Output:0
+	ALBEDO = n_out5p0;
+	ALPHA = n_out7p0;
+	METALLIC = n_out9p0;
+	ROUGHNESS = n_out11p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -16.0907, 168 )
+nodes/fragment/0/position = Vector2( 359, -22 )
+nodes/fragment/2/node = SubResource( 3 )
+nodes/fragment/2/position = Vector2( -360, 60 )
+nodes/fragment/3/node = SubResource( 4 )
+nodes/fragment/3/position = Vector2( -100, 160 )
+nodes/fragment/4/node = SubResource( 5 )
+nodes/fragment/4/position = Vector2( -340, -80 )
+nodes/fragment/5/node = SubResource( 6 )
+nodes/fragment/5/position = Vector2( 100, 0 )
+nodes/fragment/6/node = SubResource( 7 )
+nodes/fragment/6/position = Vector2( -100, 260 )
+nodes/fragment/7/node = SubResource( 8 )
+nodes/fragment/7/position = Vector2( 120, 200 )
+nodes/fragment/8/node = SubResource( 9 )
+nodes/fragment/8/position = Vector2( -121, 378 )
+nodes/fragment/9/node = SubResource( 10 )
+nodes/fragment/9/position = Vector2( 120, 320 )
+nodes/fragment/10/node = SubResource( 1 )
+nodes/fragment/10/position = Vector2( -120, 480 )
+nodes/fragment/11/node = SubResource( 2 )
+nodes/fragment/11/position = Vector2( 120, 440 )
+nodes/fragment/connections = PoolIntArray( 2, 0, 3, 0, 4, 0, 5, 0, 5, 0, 0, 0, 6, 0, 7, 1, 7, 0, 0, 1, 8, 0, 9, 1, 3, 0, 9, 0, 9, 0, 0, 2, 10, 0, 11, 1, 3, 0, 11, 0, 11, 0, 0, 3, 3, 0, 5, 1, 2, 0, 7, 0 )
+
+[resource]
+shader = SubResource( 11 )
+shader_param/carta_cor = Color( 0.968627, 1, 0, 1 )
+shader_param/carta_alfa = 1.0
+shader_param/carta_metalico = 1.0
+shader_param/carta_rugosidade = 0.0

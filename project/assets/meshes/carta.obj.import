@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/carta.obj-fa6af6e1613f4ee114d2f2ba8f17a475.mesh"
+
+[deps]
+
+files=[ "res://.import/carta.obj-fa6af6e1613f4ee114d2f2ba8f17a475.mesh" ]
+
+source_file="res://assets/meshes/carta.obj"
+dest_files=[ "res://.import/carta.obj-fa6af6e1613f4ee114d2f2ba8f17a475.mesh", "res://.import/carta.obj-fa6af6e1613f4ee114d2f2ba8f17a475.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true
