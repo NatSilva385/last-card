@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://scene/main_enviroment.tres" type="Environment" id=1]
+
+[node name="Main" type="Spatial"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = ExtResource( 1 )
+
+[node name="DirectionalLight" type="DirectionalLight" parent="WorldEnvironment"]
+transform = Transform( 1, 0, 0, 0, -0.642787, 0.766045, 0, -0.766045, -0.642787, 0, 65.9566, 0 )
+light_energy = 2.0
+shadow_enabled = true
+shadow_color = Color( 0.6, 0.6, 0.6, 1 )

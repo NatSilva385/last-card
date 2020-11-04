@@ -2,8 +2,8 @@
 
 importer="texture"
 type="StreamTexture"
-path.s3tc="res://.import/um_n.png-1993916b690583b4297e7fe338893258.s3tc.stex"
-path.etc="res://.import/um_n.png-1993916b690583b4297e7fe338893258.etc.stex"
+path.s3tc="res://.import/um_d_g.png-8ddd8fbef85840252a413629cef8538a.s3tc.stex"
+path.etc="res://.import/um_d_g.png-8ddd8fbef85840252a413629cef8538a.etc.stex"
 metadata={
 "imported_formats": [ "s3tc", "etc" ],
 "vram_texture": true
@@ -11,8 +11,8 @@ metadata={
 
 [deps]
 
-source_file="res://assets/texture/numeros/padrao/um_n.png"
-dest_files=[ "res://.import/um_n.png-1993916b690583b4297e7fe338893258.s3tc.stex", "res://.import/um_n.png-1993916b690583b4297e7fe338893258.etc.stex" ]
+source_file="res://assets/texture/numeros/padrao/um_d_g.png"
+dest_files=[ "res://.import/um_d_g.png-8ddd8fbef85840252a413629cef8538a.s3tc.stex", "res://.import/um_d_g.png-8ddd8fbef85840252a413629cef8538a.etc.stex" ]
 
 [params]
 
@@ -20,7 +20,7 @@ compress/mode=2
 compress/lossy_quality=0.7
 compress/hdr_mode=0
 compress/bptc_ldr=0
-compress/normal_map=1
+compress/normal_map=0
 flags/repeat=true
 flags/filter=true
 flags/mipmaps=true
