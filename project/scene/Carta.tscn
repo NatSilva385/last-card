@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://assets/material/carta-frente-padrao.tres" type="Material" id=1]
 [ext_resource path="res://assets/meshes/carta.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://src/views/CartaView.cs" type="Script" id=3]
+[ext_resource path="res://assets/material/carta-tras-padrao.tres" type="Material" id=4]
 
 [node name="Carta" type="Spatial"]
 script = ExtResource( 3 )
@@ -10,4 +11,4 @@ script = ExtResource( 3 )
 [node name="mesh" type="MeshInstance" parent="."]
 mesh = ExtResource( 2 )
 material/0 = ExtResource( 1 )
-material/1 = null
+material/1 = ExtResource( 4 )

@@ -28,6 +28,8 @@ public class BaralhoView : Spatial
         List<CartaCor> val = JsonSerializer.Deserialize<List<CartaCor>>(content);
         Color[] cores = new Color[5];
         var pos = this.Translation;
+        var shape = GetChild<Area>(0).GetChild<CollisionShape>(0).Shape as BoxShape;
+        GetChild<Area>(0).GetChild<CollisionShape>(0).GlobalTranslate(new Vector3(pos.x, pos.y, pos.z - 1));
         float altura = 0;
         float x = 0, y = 0;
         for (int i = 0; i < 5; i++)
@@ -49,14 +51,16 @@ public class BaralhoView : Spatial
                         var shader = shaderCartaFrente.Duplicate(true) as ShaderMaterial;
                         carta.init(c, valor, cores, shader);
                         var local = pos;
-                        local += new Vector3(x, y, 0);
+                        local += new Vector3(0, altura, 0);
+                        AddChild(carta);
                         //carta.GlobalTranslate(local);
                         carta.Translation = local;
-                        //carta.Rotate(Vector3.Right, Mathf.Pi / 2);
-                        //carta.Rotate(Vector3.Up, Mathf.Pi);
+                        carta.Rotate(Vector3.Right, Mathf.Pi / 2);
+                        carta.Rotate(Vector3.Up, Mathf.Pi);
                         cartas.Add(carta);
-                        AddChild(carta);
-                        altura += 2f;
+                        altura += 0.02f;
+                        GetChild<Area>(0).GetChild<CollisionShape>(0).Translation = new Vector3(local.x - 0.4f, local.y, local.z);
+                        shape.Extents = new Vector3(0.7f, altura / 2, 1);
                         x += 1.4f;
                     }
                 }
@@ -69,6 +73,15 @@ public class BaralhoView : Spatial
 
     }
 
+    public void _on_Area_mouse_entered()
+    {
+        GD.Print("Entrou");
+    }
+
+    public void _on_Area_mouse_exited()
+    {
+        GD.Print("Saiu");
+    }
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
     //  public override void _Process(float delta)
     //  {
