@@ -100,6 +100,19 @@ public class CartaView : Spatial
         CorCarta = corCarta;
     }
 
+    public void _on_Area_mouse_entered()
+    {
+        // GetNode<MeshInstance>("outline").Visible = true;
+        GD.Print(GetNode<VisualInstance>("mesh").Layers);
+        GetNode<VisualInstance>("mesh").Layers = 3;
+    }
+
+    public void _on_Area_mouse_exited()
+    {
+        // GetNode<MeshInstance>("outline").Visible = false;
+        GetNode<VisualInstance>("mesh").Layers = 1;
+    }
+
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
     //  public override void _Process(float delta)
     //  {

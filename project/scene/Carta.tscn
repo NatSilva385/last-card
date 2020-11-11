@@ -1,9 +1,51 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://assets/material/carta-frente-padrao.tres" type="Material" id=1]
 [ext_resource path="res://assets/meshes/carta.obj" type="ArrayMesh" id=2]
 [ext_resource path="res://src/views/CartaView.cs" type="Script" id=3]
 [ext_resource path="res://assets/material/carta-tras-padrao.tres" type="Material" id=4]
+
+[sub_resource type="VisualShaderNodeColorConstant" id=1]
+constant = Color( 0, 0, 0, 1 )
+
+[sub_resource type="VisualShader" id=2]
+code = "shader_type spatial;
+render_mode specular_schlick_ggx, unshaded;
+
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// Color:2
+	vec3 n_out2p0 = vec3(0.000000, 0.000000, 0.000000);
+	float n_out2p1 = 1.000000;
+
+// Output:0
+	ALBEDO = n_out2p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -462.655, 97 )
+flags/unshaded = true
+nodes/fragment/2/node = SubResource( 1 )
+nodes/fragment/2/position = Vector2( 200, 240 )
+nodes/fragment/connections = PoolIntArray( 2, 0, 0, 0 )
+
+[sub_resource type="ShaderMaterial" id=3]
+shader = SubResource( 2 )
+
+[sub_resource type="BoxShape" id=4]
+extents = Vector3( 0.690767, 0.994004, 0.0126499 )
 
 [node name="Carta" type="Spatial"]
 script = ExtResource( 3 )
@@ -12,3 +54,20 @@ script = ExtResource( 3 )
 mesh = ExtResource( 2 )
 material/0 = ExtResource( 1 )
 material/1 = ExtResource( 4 )
+
+[node name="outline" type="MeshInstance" parent="."]
+transform = Transform( 1.04, 0, 0, 0, 1.04, 0, 0, 0, 1, 0, -0.04, -0.0171816 )
+visible = false
+layers = 2
+cast_shadow = 0
+mesh = ExtResource( 2 )
+material/0 = SubResource( 3 )
+material/1 = null
+
+[node name="Area" type="Area" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="Area"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0 )
+shape = SubResource( 4 )
+[connection signal="mouse_entered" from="Area" to="." method="_on_Area_mouse_entered"]
+[connection signal="mouse_exited" from="Area" to="." method="_on_Area_mouse_exited"]
