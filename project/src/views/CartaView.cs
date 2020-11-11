@@ -103,7 +103,6 @@ public class CartaView : Spatial
     public void _on_Area_mouse_entered()
     {
         // GetNode<MeshInstance>("outline").Visible = true;
-        GD.Print(GetNode<VisualInstance>("mesh").Layers);
         GetNode<VisualInstance>("mesh").Layers = 3;
     }
 
