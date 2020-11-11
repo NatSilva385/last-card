@@ -2,7 +2,21 @@ namespace project.src.models
 {
     public class Carta
     {
+        public COR Cor { get; set; }
+        public VALOR Valor { get; set; }
 
+        public bool podeJogar(Carta carta)
+        {
+            if (this.Valor == VALOR.CORINGA || this.Valor == VALOR.CORINGA_MAIS_QUATRO)
+            {
+                return true;
+            }
+            if (carta.Cor == this.Cor || carta.Valor == this.Valor)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
     public enum COR

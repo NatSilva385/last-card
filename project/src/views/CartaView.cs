@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using project.src.models;
+using System.Collections.Generic;
 public class CartaView : Spatial
 {
 
@@ -9,6 +10,26 @@ public class CartaView : Spatial
     private Texture difuse;
     private Texture normal;
     private Color _valorCorCarta;
+
+    private Texture[] _normals;
+    private Texture[] _difuses;
+
+    private Carta _carta;
+
+    public Carta Carta
+    {
+        get
+        {
+            return _carta;
+        }
+        set
+        {
+            _carta = value;
+            CorCarta = Carta.Cor;
+            ValorCarta = Carta.Valor;
+        }
+    }
+
 
     public COR CorCarta
     {
@@ -32,8 +53,8 @@ public class CartaView : Spatial
         get => _valorCarta; set
         {
             _valorCarta = value;
-            difuse = ResourceLoader.Load<Texture>($"res://assets/texture/numeros/padrao/{Enum.GetName(typeof(VALOR), ValorCarta).ToLower()}_d_c.png");
-            normal = ResourceLoader.Load<Texture>($"res://assets/texture/numeros/padrao/{Enum.GetName(typeof(VALOR), ValorCarta).ToLower()}_n.png");
+            difuse = Difuses[(int)ValorCarta];
+            normal = Normals[(int)ValorCarta];
         }
     }
 
@@ -53,6 +74,9 @@ public class CartaView : Spatial
         }
     }
 
+    public Texture[] Normals { get => _normals; set => _normals = value; }
+    public Texture[] Difuses { get => _difuses; set => _difuses = value; }
+
     public Color[] cores;
 
 
@@ -64,13 +88,16 @@ public class CartaView : Spatial
 
     }
 
-    public void init(COR corCarta, VALOR valorCarta, Color[] cores, ShaderMaterial frente)
+    public void init(COR corCarta, VALOR valorCarta, Color[] cores, ShaderMaterial frente, Texture[] difuses, Texture[] normals)
     {
         var original = GetNode<MeshInstance>("mesh");
         original.SetSurfaceMaterial(0, frente);
+        Difuses = difuses;
+        Normals = normals;
         this.cores = cores;
         ValorCarta = valorCarta;
         CorCarta = corCarta;
+
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

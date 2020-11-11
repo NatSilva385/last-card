@@ -1,9 +1,12 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scene/main_enviroment.tres" type="Environment" id=1]
 [ext_resource path="res://scene/Baralho.tscn" type="PackedScene" id=2]
+[ext_resource path="res://scene/Mao.tscn" type="PackedScene" id=3]
+[ext_resource path="res://src/views/Jogo.cs" type="Script" id=4]
 
 [node name="Main" type="Spatial"]
+script = ExtResource( 4 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = ExtResource( 1 )
@@ -15,7 +18,12 @@ shadow_enabled = true
 shadow_color = Color( 0.6, 0.6, 0.6, 1 )
 
 [node name="Baralho" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5.42018, 0.966481, 0.312896 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.57322, 0.966481, 0.312896 )
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.896308, 0.443431, 0, -0.443431, 0.896308, 6.94539, 7.19034, 10.1825 )
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="Mao" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, 0.896308, 0.443431, 0, -0.443431, 0.896308, 6.7175, -0.241315, 6.29674 )
