@@ -18,7 +18,8 @@ shadow_enabled = true
 shadow_color = Color( 0.6, 0.6, 0.6, 1 )
 
 [node name="Baralho" parent="." instance=ExtResource( 2 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.57322, 0.966481, 0.312896 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.5066, 0.966481, 0.312896 )
+offsetBox = -0.5
 
 [node name="Camera" type="Camera" parent="."]
 transform = Transform( 1, 0, 0, 0, 0.896308, 0.443431, 0, -0.443431, 0.896308, 6.94539, 7.19034, 10.1825 )

@@ -25,8 +25,9 @@ public class CartaView : Spatial
         set
         {
             _carta = value;
-            CorCarta = Carta.Cor;
             ValorCarta = Carta.Valor;
+            CorCarta = Carta.Cor;
+
         }
     }
 
@@ -97,7 +98,6 @@ public class CartaView : Spatial
         this.cores = cores;
         ValorCarta = valorCarta;
         CorCarta = corCarta;
-
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

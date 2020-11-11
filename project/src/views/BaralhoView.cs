@@ -11,6 +11,9 @@ public class BaralhoView : Spatial
     // Called when the node enters the scene tree for the first time.
     List<CartaView> cartas = new List<CartaView>();
     public Jogo jogo;
+
+    [Export]
+    public float offsetBox = 0;
     private bool _podeClicar = true;
 
     public void podeClicar()
@@ -48,15 +51,13 @@ public class BaralhoView : Spatial
         Color[] cores = new Color[5];
         Texture[] difuses = new Texture[Enum.GetNames(typeof(VALOR)).Length];
         Texture[] normals = new Texture[Enum.GetNames(typeof(VALOR)).Length];
-        int w = 0;
         foreach (VALOR valor in Enum.GetValues(typeof(VALOR)))
         {
             if (valor != VALOR.SEMVALOR)
             {
-                difuses[w] = ResourceLoader.Load<Texture>($"res://assets/texture/numeros/padrao/{Enum.GetName(typeof(VALOR), valor).ToLower()}_d_c.png");
-                normals[w] = ResourceLoader.Load<Texture>($"res://assets/texture/numeros/padrao/{Enum.GetName(typeof(VALOR), valor).ToLower()}_n.png");
+                difuses[(int)valor] = ResourceLoader.Load<Texture>($"res://assets/texture/numeros/padrao/{Enum.GetName(typeof(VALOR), valor).ToLower()}_d_c.png");
+                normals[(int)valor] = ResourceLoader.Load<Texture>($"res://assets/texture/numeros/padrao/{Enum.GetName(typeof(VALOR), valor).ToLower()}_n.png");
             }
-            w++;
         }
 
         var pos = Translation;
@@ -93,7 +94,7 @@ public class BaralhoView : Spatial
                         cartas.Add(carta);
                         altura += 0.02f;
                         shape.Extents = new Vector3(0.7f, altura / 2, 1);
-                        GetChild<Area>(0).GetChild<CollisionShape>(0).Translation = new Vector3(0, altura, 0);
+                        GetChild<Area>(0).GetChild<CollisionShape>(0).Translation = new Vector3(0 + offsetBox, altura, 0);
                         x += 1.4f;
                     }
                 }
@@ -129,6 +130,9 @@ public class BaralhoView : Spatial
                     if (last >= 0)
                     {
                         var r = cartas[last];
+                        GD.Print("" + r.CorCarta + " " + r.ValorCarta);
+                        r.Carta = jogo.jogo.comprarUmaCarta();
+                        GD.Print("" + r.Carta.Cor + " " + r.Carta.Valor);
                         //GD.Print(r.Translation);
                         _podeClicar = false;
                         cartas.Remove(r);

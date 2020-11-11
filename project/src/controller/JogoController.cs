@@ -5,12 +5,14 @@ using Godot;
 
 namespace project.src.controller
 {
-    public abstract class JogoController : JogoInterface
+    public class JogoController : JogoInterface
     {
         List<Carta> baralho;
+
         public JogoController()
         {
             baralho = embaralhar(initBaralho());
+            //baralho = initBaralho();
         }
 
         private List<Carta> initBaralho()
