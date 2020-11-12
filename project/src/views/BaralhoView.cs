@@ -83,6 +83,7 @@ public class BaralhoView : Spatial
                         var carta = cartaScene.Instance() as CartaView;
                         var shader = shaderCartaFrente.Duplicate(true) as ShaderMaterial;
                         carta.init(c, valor, cores, shader, difuses, normals);
+                        carta.Jogo = jogo;
                         var local = pos;
                         local += new Vector3(0, altura, 0);
                         jogo.AddChild(carta);

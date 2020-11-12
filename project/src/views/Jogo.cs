@@ -11,6 +11,8 @@ public class Jogo : Spatial
     public JogoInterface jogo;
     BaralhoView baralho;
     MaoView mao;
+    DescarteView descarte;
+
     public override void _Ready()
     {
         jogo = new JogoController();
@@ -19,6 +21,7 @@ public class Jogo : Spatial
         baralho.criacartas();
         mao = GetNode<MaoView>("Mao");
         mao.jogo = this;
+        descarte = GetNode<DescarteView>("Descarte");
         //baralho.embaralhar();
     }
 
@@ -26,6 +29,13 @@ public class Jogo : Spatial
     {
         var rot = GetNode<Camera>("Camera").RotationDegrees;
         mao.addCarta(carta, rot);
+    }
+
+    public bool jogarCarta(CartaView carta)
+    {
+        mao.removeCarta(carta);
+        descarte.addCarta(carta);
+        return true;
     }
 
     public void liberaCompra()
