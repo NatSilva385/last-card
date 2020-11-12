@@ -3,7 +3,18 @@ namespace project.src.models
     public class Carta
     {
         public COR Cor { get; set; }
-        public VALOR Valor { get; set; }
+        private VALOR _valor;
+        public VALOR Valor
+        {
+            get => _valor; set
+            {
+                _valor = value;
+                if (value == VALOR.CORINGA || value == VALOR.CORINGA_MAIS_QUATRO)
+                {
+                    Cor = COR.SEMCOR;
+                }
+            }
+        }
 
         public bool podeJogar(Carta carta)
         {

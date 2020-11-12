@@ -1,87 +1,113 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using project.src.models;
 
 public class MaoView : Spatial
 {
-	[Export]
-	public float larguraCarta = 1.4f;
+    [Export]
+    public float larguraCarta = 1.4f;
 
-	[Export]
-	public float maximoMao = 9;
+    [Export]
+    public float maximoMao = 9;
 
-	[Export]
-	public float distanciaCartas = 0.001f;
+    [Export]
+    public float distanciaCartas = 0.001f;
 
-	public Jogo jogo;
-	List<CartaView> cartas = new List<CartaView>();
-	public override void _Ready()
-	{
+    public Jogo jogo;
+    List<CartaView> cartas = new List<CartaView>();
+    public override void _Ready()
+    {
 
-	}
+    }
 
-	public void addCarta(CartaView carta, Vector3 rot)
-	{
-		cartas.Add(carta);
-		var novasPosicoes = calculaPosicoes();
-		var tween = GetNode("Tween") as Tween;
-		var animacoes = new List<Tween>();
-		for (int i = 0; i < cartas.Count; i++)
-		{
-			tween.InterpolateProperty(cartas[i], "translation", cartas[i].Translation, novasPosicoes[i], 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
-			tween.InterpolateProperty(cartas[i], "rotation_degrees", cartas[i].RotationDegrees, rot, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
-		}
+    public void addCarta(CartaView carta, Vector3 rot)
+    {
+        cartas.Add(carta);
+        var novasPosicoes = calculaPosicoes();
+        var tween = GetNode("Tween") as Tween;
+        var animacoes = new List<Tween>();
+        for (int i = 0; i < cartas.Count; i++)
+        {
+            tween.InterpolateProperty(cartas[i], "translation", cartas[i].Translation, novasPosicoes[i], 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
+            tween.InterpolateProperty(cartas[i], "rotation_degrees", cartas[i].RotationDegrees, rot, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
+        }
 
-		tween.Start();
-	}
+        tween.Start();
+    }
 
-	private List<Vector3> calculaPosicoes()
-	{
-		var novasPosicoes = new List<Vector3>();
-		var posInicial = this.Translation;
-		float larguraTemporaria = larguraCarta, nX;
-		GD.Print(posInicial);
+    private void ordenaCartas()
+    {
+        var novasPosicoes = calculaPosicoes();
+        var tween = GetNode("Tween") as Tween;
+        var animacoes = new List<Tween>();
+        for (int i = 0; i < cartas.Count; i++)
+        {
+            tween.InterpolateProperty(cartas[i], "translation", cartas[i].Translation, novasPosicoes[i], 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
+        }
 
-		if (cartas.Count == 0)
-		{
-			novasPosicoes.Add(Vector3.Zero);
-			return novasPosicoes;
-		}
+        tween.Start();
+    }
 
-		if (cartas.Count < maximoMao)
-		{
-			nX = ((cartas.Count * larguraTemporaria) / 2) * -1;
-			nX += larguraTemporaria / 2;
-		}
-		else
-		{
-			nX = ((maximoMao * larguraTemporaria) / 2) * -1;
-			nX += larguraTemporaria / 2;
-			larguraTemporaria = (nX * 2 * -1) / (cartas.Count - 1);
-		}
-		float dz = 0;
-		foreach (var carta in cartas)
-		{
-			var p = posInicial;
-			p += new Vector3(nX, 0, dz);
-			novasPosicoes.Add(p);
-			nX += larguraTemporaria;
-			dz += distanciaCartas;
-		}
+    private List<Vector3> calculaPosicoes()
+    {
+        var novasPosicoes = new List<Vector3>();
+        var posInicial = this.Translation;
+        float larguraTemporaria = larguraCarta, nX;
+        GD.Print(posInicial);
 
-		return novasPosicoes;
+        if (cartas.Count == 0)
+        {
+            novasPosicoes.Add(Vector3.Zero);
+            return novasPosicoes;
+        }
 
-	}
+        if (cartas.Count < maximoMao)
+        {
+            nX = ((cartas.Count * larguraTemporaria) / 2) * -1;
+            nX += larguraTemporaria / 2;
+        }
+        else
+        {
+            nX = ((maximoMao * larguraTemporaria) / 2) * -1;
+            nX += larguraTemporaria / 2;
+            larguraTemporaria = (nX * 2 * -1) / (cartas.Count - 1);
+        }
+        float dz = 0;
+        foreach (var carta in cartas)
+        {
+            var p = posInicial;
+            p += new Vector3(nX, 0, dz);
+            novasPosicoes.Add(p);
+            nX += larguraTemporaria;
+            dz += distanciaCartas;
+        }
 
-	private void _on_Tween_tween_completed(Godot.Object @object, NodePath key)
-	{
-		// Replace with function body.
-		jogo.liberaCompra();
-	}
+        return novasPosicoes;
 
-	//  // Called every frame. 'delta' is the elapsed time since the previous frame.
-	//  public override void _Process(float delta)
-	//  {
-	//      
-	//  }
+    }
+
+    private void _on_Tween_tween_completed(Godot.Object @object, NodePath key)
+    {
+        // Replace with function body.
+        jogo.liberaCompra();
+        if (@object is CartaView)
+        {
+            (@object as CartaView).Habilitada = true;
+        }
+    }
+
+    public void removeCarta(CartaView carta)
+    {
+        cartas.Remove(carta);
+        ordenaCartas();
+    }
+
+
+
+    //  // Called every frame. 'delta' is the elapsed time since the previous frame.
+    //  public override void _Process(float delta)
+    //  {
+    //      
+    //  }
 }

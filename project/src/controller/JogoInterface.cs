@@ -8,5 +8,10 @@ namespace project.src.controller
         Carta comprarUmaCarta();
         List<Carta> comprarCartas(int qtdeCartas);
 
+        bool jogarCarta(Carta carta);
+
+        bool podeJogarCarta(Carta carta);
+
+        bool mudaCor(COR cor);
     }
 }
