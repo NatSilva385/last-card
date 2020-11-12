@@ -14,7 +14,11 @@ public class DescarteView : Spatial
     public void addCarta(CartaView carta)
     {
         var posIni = this.Translation;
-        var rot = new Vector3(-90, 0, 0);
+
+        var r = new RandomNumberGenerator();
+        r.Randomize();
+        var rRot = r.RandfRange(-20, 20);
+        var rot = new Vector3(-90, rRot, 0);
         posIni = new Vector3(posIni.x, posIni.y + (cartas.Count * 0.02f), posIni.z);
         var tween = GetNode<Tween>("Tween");
         tween.InterpolateProperty(carta, "translation", carta.Translation, posIni, 0.5f, Tween.TransitionType.Quart, Tween.EaseType.Out);

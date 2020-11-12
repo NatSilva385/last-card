@@ -42,6 +42,7 @@ namespace project.src.controller
         {
             List<Carta> temp = cartas;
             var rnd = new RandomNumberGenerator();
+            rnd.Randomize();
             for (int i = 0; i < temp.Count; i++)
             {
                 int x = rnd.RandiRange(0, i);
