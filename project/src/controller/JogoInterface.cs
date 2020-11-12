@@ -11,5 +11,7 @@ namespace project.src.controller
         bool jogarCarta(Carta carta);
 
         bool podeJogarCarta(Carta carta);
+
+        bool mudaCor(COR cor);
     }
 }

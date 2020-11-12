@@ -111,5 +111,17 @@ namespace project.src.controller
             }
             return podeJogar;
         }
+
+        public bool mudaCor(COR cor)
+        {
+            var last = descarte.Count - 1;
+            var ultimaCarta = descarte[last];
+            if (ultimaCarta.Cor == COR.SEMCOR)
+            {
+                ultimaCarta.Cor = cor;
+                return true;
+            }
+            return false;
+        }
     }
 }

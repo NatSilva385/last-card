@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using project.src.models;
 
 public class MaoView : Spatial
 {
@@ -90,6 +91,10 @@ public class MaoView : Spatial
     {
         // Replace with function body.
         jogo.liberaCompra();
+        if (@object is CartaView)
+        {
+            (@object as CartaView).Habilitada = true;
+        }
     }
 
     public void removeCarta(CartaView carta)
@@ -97,6 +102,8 @@ public class MaoView : Spatial
         cartas.Remove(carta);
         ordenaCartas();
     }
+
+
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
     //  public override void _Process(float delta)

@@ -1,0 +1,115 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://assets/meshes/cor_selecao_2.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://src/views/SelecaoView.cs" type="Script" id=2]
+
+[sub_resource type="VisualShaderNodeColorUniform" id=3]
+uniform_name = "cor"
+
+[sub_resource type="VisualShaderNodeIf" id=4]
+output_port_for_preview = 0
+default_input_values = [ 0, 0.0, 1, 1.0, 2, 1e-05, 3, Vector3( 0, 0, 0 ), 4, Vector3( 0, 0, 0 ), 5, Vector3( 0, 0, 0 ) ]
+
+[sub_resource type="VisualShaderNodeScalarUniform" id=5]
+uniform_name = "ativa"
+
+[sub_resource type="VisualShaderNodeVectorOp" id=7]
+output_port_for_preview = 0
+default_input_values = [ 0, Vector3( 0, 0, 0 ), 1, Vector3( 100, 100, 100 ) ]
+operator = 2
+
+[sub_resource type="VisualShaderNodeScalarConstant" id=9]
+constant = 500.0
+
+[sub_resource type="VisualShader" id=6]
+code = "shader_type spatial;
+render_mode specular_schlick_ggx;
+
+uniform vec4 cor : hint_color;
+uniform float ativa;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// ColorUniform:2
+	vec3 n_out2p0 = cor.rgb;
+	float n_out2p1 = cor.a;
+
+// ScalarUniform:4
+	float n_out4p0 = ativa;
+
+// VectorOp:5
+	vec3 n_in5p1 = vec3(100.00000, 100.00000, 100.00000);
+	vec3 n_out5p0 = n_out2p0 * n_in5p1;
+
+// If:3
+	float n_in3p1 = 1.00000;
+	float n_in3p2 = 0.00001;
+	vec3 n_in3p4 = vec3(0.00000, 0.00000, 0.00000);
+	vec3 n_in3p5 = vec3(0.00000, 0.00000, 0.00000);
+	vec3 n_out3p0;
+	if(abs(n_out4p0 - n_in3p1) < n_in3p2)
+	{
+		n_out3p0 = n_out5p0;
+	}
+	else if(n_out4p0 < n_in3p1)
+	{
+		n_out3p0 = n_in3p5;
+	}
+	else
+	{
+		n_out3p0 = n_in3p4;
+	}
+
+// Output:0
+	ALBEDO = n_out2p0;
+	EMISSION = n_out3p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -155.105, 216 )
+nodes/fragment/0/position = Vector2( 660, 200 )
+nodes/fragment/2/node = SubResource( 3 )
+nodes/fragment/2/position = Vector2( -100, 160 )
+nodes/fragment/3/node = SubResource( 4 )
+nodes/fragment/3/position = Vector2( 280, 340 )
+nodes/fragment/4/node = SubResource( 5 )
+nodes/fragment/4/position = Vector2( 80, 320 )
+nodes/fragment/5/node = SubResource( 7 )
+nodes/fragment/5/position = Vector2( 0, 400 )
+nodes/fragment/6/node = SubResource( 9 )
+nodes/fragment/6/position = Vector2( 380, 240 )
+nodes/fragment/connections = PoolIntArray( 4, 0, 3, 0, 2, 0, 5, 0, 5, 0, 3, 3, 2, 0, 0, 0, 3, 0, 0, 5 )
+
+[sub_resource type="ShaderMaterial" id=10]
+shader = SubResource( 6 )
+shader_param/cor = Color( 0, 0, 1, 1 )
+shader_param/ativa = 0.0
+
+[sub_resource type="ConcavePolygonShape" id=8]
+data = PoolVector3Array( 0.0914, -0.4732, 1.3477, 0.0914, -0.4732, 0.1011, 0.0914, 1.477, 1.3477, 0.0914, 1.477, 1.3477, 0.0914, -0.4732, 0.1011, 0.0914, 1.477, 0.1011, 1.3489, -0.4732, 1.3477, 0.0914, -0.4732, 1.3477, 1.3489, 1.477, 1.3477, 1.3489, 1.477, 1.3477, 0.0914, -0.4732, 1.3477, 0.0914, 1.477, 1.3477, 1.3489, -0.4732, 0.1011, 1.3489, -0.4732, 1.3477, 1.3489, 1.477, 0.1011, 1.3489, 1.477, 0.1011, 1.3489, -0.4732, 1.3477, 1.3489, 1.477, 1.3477, 0.0914, -0.4732, 0.1011, 1.3489, -0.4732, 0.1011, 0.0914, 1.477, 0.1011, 0.0914, 1.477, 0.1011, 1.3489, -0.4732, 0.1011, 1.3489, 1.477, 0.1011, 0.0914, -0.4732, 0.1011, 0.0914, -0.4732, 1.3477, 1.3489, -0.4732, 0.1011, 1.3489, -0.4732, 0.1011, 0.0914, -0.4732, 1.3477, 1.3489, -0.4732, 1.3477, 1.3489, 1.477, 0.1011, 1.3489, 1.477, 1.3477, 0.0914, 1.477, 0.1011, 0.0914, 1.477, 0.1011, 1.3489, 1.477, 1.3477, 0.0914, 1.477, 1.3477 )
+
+[node name="selecao_azul" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="cor_selecao_2" type="MeshInstance" parent="."]
+mesh = ExtResource( 1 )
+material/0 = SubResource( 10 )
+
+[node name="Area" type="Area" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="Area"]
+shape = SubResource( 8 )
+[connection signal="input_event" from="Area" to="." method="_on_Area_input_event"]
+[connection signal="mouse_entered" from="Area" to="." method="_on_Area_mouse_entered"]
+[connection signal="mouse_exited" from="Area" to="." method="_on_Area_mouse_exited"]

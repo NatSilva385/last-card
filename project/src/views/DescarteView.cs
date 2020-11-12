@@ -1,10 +1,14 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using project.src.models;
 public class DescarteView : Spatial
 {
 
     List<CartaView> cartas = new List<CartaView>();
+    private Jogo _jogo;
+
+    public Jogo Jogo { get => _jogo; set => _jogo = value; }
 
     public override void _Ready()
     {
@@ -25,6 +29,24 @@ public class DescarteView : Spatial
         tween.InterpolateProperty(carta, "rotation_degrees", carta.RotationDegrees, rot, 0.5f, Tween.TransitionType.Linear, Tween.EaseType.InOut);
         tween.Start();
         cartas.Add(carta);
+    }
+
+    private void _on_Tween_tween_completed(Godot.Object @object, NodePath key)
+    {
+        if (@object is CartaView)
+        {
+            if ((@object as CartaView).Carta.Cor == COR.SEMCOR)
+            {
+                Jogo.habilitarEscolhaCor(@object as CartaView);
+            }
+        }
+    }
+
+    public void mudaCorCarta(COR cor)
+    {
+        var last = cartas.Count - 1;
+        var ultimaCarta = cartas[last];
+        ultimaCarta.CorCarta = cor;
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

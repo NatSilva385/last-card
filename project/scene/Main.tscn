@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://scene/Cenario.tscn" type="PackedScene" id=1]
 [ext_resource path="res://scene/Baralho.tscn" type="PackedScene" id=2]
 [ext_resource path="res://scene/Mao.tscn" type="PackedScene" id=3]
 [ext_resource path="res://src/views/Jogo.cs" type="Script" id=4]
 [ext_resource path="res://scene/Descarte.tscn" type="PackedScene" id=5]
+[ext_resource path="res://scene/selecao_cor.tscn" type="PackedScene" id=6]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -79,6 +80,11 @@ cull_mask = 2
 current = true
 
 [node name="Cenario" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.00764132, -0.0149975, 0.00182819 )
 
 [node name="Descarte" parent="." instance=ExtResource( 5 )]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.418073, 0.17457, -0.306586 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.418073, 0.17457, 1.13519 )
+
+[node name="selecao_cor" parent="." instance=ExtResource( 6 )]
+transform = Transform( 1, 0, 0, 0, 0.749048, -0.662515, 0, 0.662515, 0.749048, -1.34316, 0.271529, -0.0609407 )
+visible = false

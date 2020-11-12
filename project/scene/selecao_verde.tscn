@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://assets/meshes/cor_selecao_4.obj" type="ArrayMesh" id=1]
+[ext_resource path="res://src/views/SelecaoView.cs" type="Script" id=2]
+[ext_resource path="res://assets/material/selecao.tres" type="Material" id=3]
+
+[sub_resource type="ConcavePolygonShape" id=2]
+data = PoolVector3Array( -0.0914, -0.4732, -1.3477, -0.0914, -0.4732, -0.1011, -0.0914, 1.477, -1.3477, -0.0914, 1.477, -1.3477, -0.0914, -0.4732, -0.1011, -0.0914, 1.477, -0.1011, -1.3489, -0.4732, -1.3477, -0.0914, -0.4732, -1.3477, -1.3489, 1.477, -1.3477, -1.3489, 1.477, -1.3477, -0.0914, -0.4732, -1.3477, -0.0914, 1.477, -1.3477, -1.3489, -0.4732, -0.1011, -1.3489, -0.4732, -1.3477, -1.3489, 1.477, -0.1011, -1.3489, 1.477, -0.1011, -1.3489, -0.4732, -1.3477, -1.3489, 1.477, -1.3477, -0.0914, -0.4732, -0.1011, -1.3489, -0.4732, -0.1011, -0.0914, 1.477, -0.1011, -0.0914, 1.477, -0.1011, -1.3489, -0.4732, -0.1011, -1.3489, 1.477, -0.1011, -0.0914, -0.4732, -0.1011, -0.0914, -0.4732, -1.3477, -1.3489, -0.4732, -0.1011, -1.3489, -0.4732, -0.1011, -0.0914, -0.4732, -1.3477, -1.3489, -0.4732, -1.3477, -1.3489, 1.477, -0.1011, -1.3489, 1.477, -1.3477, -0.0914, 1.477, -0.1011, -0.0914, 1.477, -0.1011, -1.3489, 1.477, -1.3477, -0.0914, 1.477, -1.3477 )
+
+[node name="selecao_verde" type="Spatial"]
+script = ExtResource( 2 )
+
+[node name="mesh" type="MeshInstance" parent="."]
+mesh = ExtResource( 1 )
+material/0 = ExtResource( 3 )
+
+[node name="Area" type="Area" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="Area"]
+shape = SubResource( 2 )
+[connection signal="input_event" from="Area" to="." method="_on_Area_input_event"]
+[connection signal="mouse_entered" from="Area" to="." method="_on_Area_mouse_entered"]
+[connection signal="mouse_exited" from="Area" to="." method="_on_Area_mouse_exited"]

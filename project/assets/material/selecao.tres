@@ -1,0 +1,41 @@
+[gd_resource type="ShaderMaterial" load_steps=3 format=2]
+
+[sub_resource type="VisualShaderNodeColorUniform" id=1]
+uniform_name = "cor"
+
+[sub_resource type="VisualShader" id=2]
+code = "shader_type spatial;
+render_mode specular_schlick_ggx;
+
+uniform vec4 cor : hint_color;
+
+
+
+void vertex() {
+// Output:0
+
+}
+
+void fragment() {
+// ColorUniform:2
+	vec3 n_out2p0 = cor.rgb;
+	float n_out2p1 = cor.a;
+
+// Output:0
+	ALBEDO = n_out2p0;
+
+}
+
+void light() {
+// Output:0
+
+}
+"
+graph_offset = Vector2( -371.105, 145 )
+nodes/fragment/2/node = SubResource( 1 )
+nodes/fragment/2/position = Vector2( 80, 200 )
+nodes/fragment/connections = PoolIntArray( 2, 0, 0, 0 )
+
+[resource]
+shader = SubResource( 2 )
+shader_param/cor = Color( 0, 1, 0, 1 )

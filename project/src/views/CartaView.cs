@@ -11,6 +11,8 @@ public class CartaView : Spatial
     private Texture normal;
     private Color _valorCorCarta;
 
+    private bool _habilitada;
+
     private Texture[] _normals;
     private Texture[] _difuses;
 
@@ -39,15 +41,15 @@ public class CartaView : Spatial
         get => _corCarta;
         set
         {
-            if (ValorCarta == VALOR.CORINGA || ValorCarta == VALOR.CORINGA_MAIS_QUATRO)
+            /**if (ValorCarta == VALOR.CORINGA || ValorCarta == VALOR.CORINGA_MAIS_QUATRO)
             {
                 _corCarta = COR.SEMCOR;
             }
             else
             {
                 _corCarta = value;
-            }
-
+            }*/
+            _corCarta = value;
             ValorCorCarta = cores[(int)CorCarta];
         }
     }
@@ -80,6 +82,7 @@ public class CartaView : Spatial
     public Texture[] Normals { get => _normals; set => _normals = value; }
     public Texture[] Difuses { get => _difuses; set => _difuses = value; }
     public Jogo Jogo { get => _jogo; set => _jogo = value; }
+    public bool Habilitada { get => _habilitada; set => _habilitada = value; }
 
     public Color[] cores;
 
@@ -101,18 +104,27 @@ public class CartaView : Spatial
         this.cores = cores;
         ValorCarta = valorCarta;
         CorCarta = corCarta;
+        Habilitada = false;
     }
 
     public void _on_Area_mouse_entered()
     {
         // GetNode<MeshInstance>("outline").Visible = true;
-        GetNode<VisualInstance>("mesh").Layers = 3;
+        if (Habilitada)
+        {
+            GetNode<VisualInstance>("mesh").Layers = 3;
+        }
+
     }
 
     public void _on_Area_mouse_exited()
     {
         // GetNode<MeshInstance>("outline").Visible = false;
-        GetNode<VisualInstance>("mesh").Layers = 1;
+        if (Habilitada)
+        {
+            GetNode<VisualInstance>("mesh").Layers = 1;
+        }
+
     }
 
     public void _on_Area_input_event(object camera, object @event, Vector3 click_position, Vector3 click_normal, int shape_idx)
@@ -121,7 +133,17 @@ public class CartaView : Spatial
         {
             if (e.ButtonMask == (int)ButtonList.Left)
             {
-                Jogo.jogarCarta(this);
+                if (Habilitada)
+                {
+                    if (Jogo.jogarCarta(this))
+                    {
+                        _on_Area_mouse_exited();
+                        this.Habilitada = false;
+                    }
+
+
+                }
+
             }
         }
     }
