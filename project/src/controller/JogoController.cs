@@ -8,7 +8,7 @@ namespace project.src.controller
     public class JogoController : JogoInterface
     {
         List<Carta> baralho;
-
+        List<Carta> descarte = new List<Carta>();
         public JogoController()
         {
             baralho = embaralhar(initBaralho());
@@ -70,6 +70,46 @@ namespace project.src.controller
         public List<Carta> comprarCartas(int qtdeCartas)
         {
             throw new NotImplementedException();
+        }
+
+        public bool jogarCarta(Carta carta)
+        {
+            bool podeJogar = false;
+            if (descarte.Count == 0)
+            {
+                descarte.Add(carta);
+                podeJogar = true;
+            }
+            else
+            {
+                var last = descarte.Count - 1;
+                var ultimaCarta = descarte[last];
+                if (carta.podeJogar(ultimaCarta))
+                {
+                    descarte.Add(carta);
+                    podeJogar = true;
+                }
+            }
+            return podeJogar;
+        }
+
+        public bool podeJogarCarta(Carta carta)
+        {
+            bool podeJogar = false;
+            if (descarte.Count == 0)
+            {
+                podeJogar = true;
+            }
+            else
+            {
+                var last = descarte.Count - 1;
+                var ultimaCarta = descarte[last];
+                if (carta.podeJogar(ultimaCarta))
+                {
+                    podeJogar = true;
+                }
+            }
+            return podeJogar;
         }
     }
 }

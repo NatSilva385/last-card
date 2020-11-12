@@ -33,9 +33,14 @@ public class Jogo : Spatial
 
     public bool jogarCarta(CartaView carta)
     {
-        mao.removeCarta(carta);
-        descarte.addCarta(carta);
-        return true;
+        if (jogo.podeJogarCarta(carta.Carta))
+        {
+            mao.removeCarta(carta);
+            descarte.addCarta(carta);
+            jogo.jogarCarta(carta.Carta);
+            return true;
+        }
+        return false;
     }
 
     public void liberaCompra()
