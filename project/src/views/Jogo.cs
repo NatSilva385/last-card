@@ -43,11 +43,17 @@ public class Jogo : Spatial
             mao.removeCarta(carta);
             descarte.addCarta(carta);
             jogo.jogarCarta(carta.Carta);
+            mao.PodeJogarCarta = false;
+            baralho.desabilitaCompra();
             return true;
         }
         return false;
     }
 
+    public bool podeJogarCarta(Carta carta)
+    {
+        return jogo.podeJogarCarta(carta);
+    }
     public void liberaCompra()
     {
         baralho.podeClicar();
@@ -68,6 +74,11 @@ public class Jogo : Spatial
             descarte.mudaCorCarta(cor);
             selecao.Visible = false;
         }
+    }
+
+    public void habilitaJogada()
+    {
+        mao.PodeJogarCarta = true;
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

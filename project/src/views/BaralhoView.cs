@@ -21,6 +21,11 @@ public class BaralhoView : Spatial
         _podeClicar = true;
     }
 
+    public void desabilitaCompra()
+    {
+        _podeClicar = false;
+    }
+
     public override void _Ready()
     {
         //criacartas();
@@ -84,6 +89,7 @@ public class BaralhoView : Spatial
                         var shader = shaderCartaFrente.Duplicate(true) as ShaderMaterial;
                         carta.init(c, valor, cores, shader, difuses, normals);
                         carta.Jogo = jogo;
+                        carta.Habilitada = true;
                         var local = pos;
                         local += new Vector3(0, altura, 0);
                         jogo.AddChild(carta);
