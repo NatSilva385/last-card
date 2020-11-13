@@ -135,12 +135,11 @@ public class CartaView : Spatial
             {
                 if (Habilitada)
                 {
-                    if (Jogo.jogarCarta(this))
+                    if (Jogo.podeJogarCarta(Carta))
                     {
                         _on_Area_mouse_exited();
-                        this.Habilitada = false;
+                        Jogo.jogarCarta(this);
                     }
-
 
                 }
 

@@ -39,6 +39,7 @@ public class DescarteView : Spatial
             {
                 Jogo.habilitarEscolhaCor(@object as CartaView);
             }
+            Jogo.habilitaJogada();
         }
     }
 

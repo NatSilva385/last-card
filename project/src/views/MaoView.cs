@@ -15,7 +15,22 @@ public class MaoView : Spatial
     public float distanciaCartas = 0.001f;
 
     public Jogo jogo;
+
+    private bool _podeJogarCarta = true;
     List<CartaView> cartas = new List<CartaView>();
+
+    public bool PodeJogarCarta
+    {
+        get => _podeJogarCarta; set
+        {
+            _podeJogarCarta = value;
+            for (int i = 0; i < cartas.Count; i++)
+            {
+                cartas[i].Habilitada = value;
+            }
+        }
+    }
+
     public override void _Ready()
     {
 
@@ -29,6 +44,7 @@ public class MaoView : Spatial
         var animacoes = new List<Tween>();
         for (int i = 0; i < cartas.Count; i++)
         {
+            cartas[i].Habilitada = PodeJogarCarta;
             tween.InterpolateProperty(cartas[i], "translation", cartas[i].Translation, novasPosicoes[i], 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
             tween.InterpolateProperty(cartas[i], "rotation_degrees", cartas[i].RotationDegrees, rot, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
         }
@@ -91,10 +107,10 @@ public class MaoView : Spatial
     {
         // Replace with function body.
         jogo.liberaCompra();
-        if (@object is CartaView)
-        {
-            (@object as CartaView).Habilitada = true;
-        }
+        /*  if (@object is CartaView)
+          {
+              (@object as CartaView).Habilitada = true;
+          }*/
     }
 
     public void removeCarta(CartaView carta)
@@ -103,6 +119,22 @@ public class MaoView : Spatial
         ordenaCartas();
     }
 
+    public void travaCartas()
+    {
+        for (int i = 0; i < cartas.Count; i++)
+        {
+            cartas[i].Habilitada = false;
+        }
+    }
+
+    public void destravaCartas()
+    {
+        foreach (CartaView carta in cartas)
+        {
+
+            carta.Habilitada = true;
+        }
+    }
 
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
