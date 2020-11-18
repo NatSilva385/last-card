@@ -7,12 +7,11 @@ namespace project.src.factory
 {
     public class CartaFactory
     {
-        private CartaView carta;
+        private PackedScene recurso;
 
         public CartaFactory()
         {
-            PackedScene recurso = ResourceLoader.Load<PackedScene>("res://scene/Carta.tscn");
-
+            recurso = ResourceLoader.Load<PackedScene>("res://scene/Carta.tscn");
         }
         private Texture[] carregaDifuses()
         {
