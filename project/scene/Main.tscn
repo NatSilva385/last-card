@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://scene/Baralho.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/views/JogoView.cs" type="Script" id=2]
 [ext_resource path="res://scene/Cenario.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scene/Mao.tscn" type="PackedScene" id=4]
 
 [node name="Spatial" type="Spatial"]
 script = ExtResource( 2 )
@@ -11,7 +12,11 @@ script = ExtResource( 2 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.59, 10.153 )
 
 [node name="Baralho" parent="." instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 4.43813, 0, -3.43166 )
 altura = 0.02
 
 [node name="Cenario" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.6564, 6.4753, 33.6367 )
+
+[node name="Mao" parent="." instance=ExtResource( 4 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2.78478 )

@@ -55,7 +55,10 @@ public class BaralhoView : Spatial
         {
             if (e.ButtonMask == (int)ButtonList.Left)
             {
-                GD.Print("Hello World");
+                int ultima = baralhoCartas.Count - 1;
+                CartaView ultimaCarta = baralhoCartas[ultima];
+                Jogo.comprarCarta(ultimaCarta);
+                baralhoCartas.Remove(ultimaCarta);
             }
         }
     }
