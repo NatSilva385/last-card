@@ -8,9 +8,10 @@
 script = ExtResource( 2 )
 
 [node name="Camera" type="Camera" parent="."]
-transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 7.93595, 3.58959, 10.1528 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.59, 10.153 )
 
 [node name="Baralho" parent="." instance=ExtResource( 1 )]
+altura = 0.02
 
 [node name="Cenario" parent="." instance=ExtResource( 3 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 12.6564, 6.4753, 33.6367 )
