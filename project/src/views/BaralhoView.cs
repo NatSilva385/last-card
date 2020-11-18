@@ -55,6 +55,10 @@ public class BaralhoView : Spatial
         {
             if (e.ButtonMask == (int)ButtonList.Left)
             {
+                if (baralhoCartas.Count == 0)
+                {
+                    return;
+                }
                 int ultima = baralhoCartas.Count - 1;
                 CartaView ultimaCarta = baralhoCartas[ultima];
                 Jogo.comprarCarta(ultimaCarta);
