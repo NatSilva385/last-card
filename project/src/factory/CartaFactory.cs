@@ -8,11 +8,20 @@ namespace project.src.factory
     public class CartaFactory
     {
         private PackedScene recurso;
+        private Texture[] difuses;
+        private Texture[] normals;
+        private Color[] cores;
+        private ShaderMaterial shaderFrente;
 
         public CartaFactory()
         {
             recurso = ResourceLoader.Load<PackedScene>("res://scene/Carta.tscn");
+            difuses = carregaDifuses();
+            normals = carregaNormals();
+            cores = carregaCores();
+            shaderFrente = carregaShaderFrente();
         }
+
         private Texture[] carregaDifuses()
         {
             Texture[] difuses = new Texture[Enum.GetNames(typeof(VALOR)).Length];
