@@ -7,6 +7,13 @@ namespace project.src.factory
 {
     public class CartaFactory
     {
+        private CartaView carta;
+
+        public CartaFactory()
+        {
+            PackedScene recurso = ResourceLoader.Load<PackedScene>("res://scene/Carta.tscn");
+
+        }
         private Texture[] carregaDifuses()
         {
             Texture[] difuses = new Texture[Enum.GetNames(typeof(VALOR)).Length];
@@ -48,6 +55,12 @@ namespace project.src.factory
             }
             return cores;
 
+        }
+
+        private ShaderMaterial carregaShaderFrente()
+        {
+            ShaderMaterial shader = ResourceLoader.Load<ShaderMaterial>("res://assets/material/carta-frente-padrao.tres");
+            return shader;
         }
     }
 }
