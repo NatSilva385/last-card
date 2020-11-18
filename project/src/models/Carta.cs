@@ -10,10 +10,18 @@ namespace project.src.models
             set;
         }
 
+        private VALOR _valor;
         public VALOR Valor
         {
-            get;
-            set;
+            get { return _valor; }
+            set
+            {
+                _valor = value;
+                if (value == VALOR.CORINGA || value == VALOR.CORINGA_MAIS_QUATRO)
+                {
+                    Cor = COR.SEMCOR;
+                }
+            }
         }
     }
 

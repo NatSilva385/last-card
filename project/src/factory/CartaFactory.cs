@@ -25,7 +25,8 @@ namespace project.src.factory
         public CartaView carregaCarta(Carta carta)
         {
             CartaView loadCarta = recurso.Instance() as CartaView;
-            loadCarta.init(normals, difuses, cores, shaderFrente);
+            var novoShader = shaderFrente.Duplicate(true) as ShaderMaterial;
+            loadCarta.init(normals, difuses, cores, novoShader);
             loadCarta.Carta = carta;
             return loadCarta;
         }
@@ -37,7 +38,7 @@ namespace project.src.factory
             {
                 if (valor != VALOR.SEM_VALOR)
                 {
-                    difuses[(int)valor] = ResourceLoader.Load<Texture>($"res://assets/texture/numeros/padrao/{Enum.GetName(typeof(VALOR), valor)}_d_c.png");
+                    difuses[(int)valor] = ResourceLoader.Load<Texture>($"res://assets/texture/numeros/padrao/{Enum.GetName(typeof(VALOR), valor).ToLower()}_d_c.png");
 
                 }
             }
@@ -50,7 +51,7 @@ namespace project.src.factory
             {
                 if (valor != VALOR.SEM_VALOR)
                 {
-                    normals[(int)valor] = ResourceLoader.Load<Texture>($"res://assets/texture/numeros/padrao/{Enum.GetName(typeof(VALOR), valor)}_n.png");
+                    normals[(int)valor] = ResourceLoader.Load<Texture>($"res://assets/texture/numeros/padrao/{Enum.GetName(typeof(VALOR), valor).ToLower()}_n.png");
 
                 }
             }

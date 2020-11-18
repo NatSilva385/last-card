@@ -22,7 +22,17 @@ public class CartaView : Spatial
 
     public Texture[] Normals { get; set; }
 
-    public ShaderMaterial Frente { get; set; }
+    public ShaderMaterial Frente
+    {
+        get
+        {
+            return GetNode<MeshInstance>("mesh").GetSurfaceMaterial(0) as ShaderMaterial;
+        }
+        set
+        {
+            GetNode<MeshInstance>("mesh").SetSurfaceMaterial(0, value);
+        }
+    }
 
     public Color[] Cores { get; set; }
 
