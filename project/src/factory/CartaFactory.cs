@@ -22,6 +22,14 @@ namespace project.src.factory
             shaderFrente = carregaShaderFrente();
         }
 
+        public CartaView carregaCarta(Carta carta)
+        {
+            CartaView loadCarta = recurso.Instance() as CartaView;
+            loadCarta.init(normals, difuses, cores, shaderFrente);
+            loadCarta.Carta = carta;
+            return loadCarta;
+        }
+
         private Texture[] carregaDifuses()
         {
             Texture[] difuses = new Texture[Enum.GetNames(typeof(VALOR)).Length];
