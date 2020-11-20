@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://assets/fonts/roboto-regular-normal.tres" type="DynamicFont" id=1]
 [ext_resource path="res://assets/fonts/roboto-regular-titulo.tres" type="DynamicFont" id=2]
+[ext_resource path="res://src/forms/FrmCadastro.cs" type="Script" id=3]
 
 [node name="CadastroUsuario" type="Control"]
 anchor_right = 1.0
@@ -26,6 +27,7 @@ margin_left = 316.0
 margin_top = 94.0
 margin_right = 707.0
 margin_bottom = 505.0
+script = ExtResource( 3 )
 
 [node name="MarginContainer" type="MarginContainer" parent="CenterContainer/PanelContainer"]
 margin_left = 7.0
@@ -65,7 +67,9 @@ margin_bottom = 33.0
 custom_fonts/font = ExtResource( 1 )
 text = "E-mail: "
 
-[node name="txtEmail" type="LineEdit" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+[node name="txtEmail" type="LineEdit" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer" groups=[
+"txt",
+]]
 margin_top = 37.0
 margin_right = 337.0
 margin_bottom = 80.0
@@ -82,7 +86,9 @@ margin_bottom = 33.0
 custom_fonts/font = ExtResource( 1 )
 text = "Nome:"
 
-[node name="txtNome" type="LineEdit" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2"]
+[node name="txtNome" type="LineEdit" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2" groups=[
+"txt",
+]]
 margin_top = 37.0
 margin_right = 337.0
 margin_bottom = 80.0
@@ -104,7 +110,9 @@ margin_bottom = 33.0
 custom_fonts/font = ExtResource( 1 )
 text = "Senha:"
 
-[node name="txtSenha" type="LineEdit" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="txtSenha" type="LineEdit" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer" groups=[
+"txt",
+]]
 margin_top = 37.0
 margin_right = 159.0
 margin_bottom = 80.0
@@ -124,7 +132,9 @@ margin_bottom = 33.0
 custom_fonts/font = ExtResource( 1 )
 text = "Repetir Senha:"
 
-[node name="txtRSenha" type="LineEdit" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2"]
+[node name="txtRSenha" type="LineEdit" parent="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2" groups=[
+"txt",
+]]
 margin_top = 37.0
 margin_right = 174.0
 margin_bottom = 80.0
@@ -156,3 +166,8 @@ margin_bottom = 39.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
 text = "Voltar"
+[connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/txtEmail" to="CenterContainer/PanelContainer" method="_on_txtEmail_text_changed"]
+[connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/txtNome" to="CenterContainer/PanelContainer" method="_on_txtNome_text_changed"]
+[connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/txtSenha" to="CenterContainer/PanelContainer" method="_on_txtSenha_text_changed"]
+[connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/txtRSenha" to="CenterContainer/PanelContainer" method="_on_txtRSenha_text_changed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/btnCadastrar" to="CenterContainer/PanelContainer" method="_on_btnCadastrar_pressed"]

@@ -17,6 +17,8 @@ app.post("/usuarios/create", jsonParser, (req, res) => {
     nUsuario: req.body.nUsuario,
     hash: req.body.password,
   };
+    console.log(req.body);
+    
   usuarioDb.adicionarUsuario(usuario);
 
   res.status(201).send("Usuário inserido com sucesso");
