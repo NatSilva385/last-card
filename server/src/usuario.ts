@@ -1,6 +1,7 @@
 import { table } from "console";
 import Knex from "knex";
 import crypto from "crypto";
+import { strict } from "assert";
 interface SaltedPassword {
   salt: string;
   hashedPassword: string;
@@ -11,8 +12,8 @@ export interface Usuario {
   nUsuario: string;
   hash?: string;
   salt?: string;
-  nivel: number;
-  experiencia: number;
+  nivel?: number;
+  experiencia?: number;
 }
 export class UsuarioDb {
   db: Knex;
@@ -53,5 +54,29 @@ export class UsuarioDb {
     hash.update(password);
     let value = hash.digest("hex");
     return value;
+  }
+
+  adicionarUsuario(usuario: Usuario) {
+    usuario.salt = this.generateSalt(12);
+    let password: string;
+    if (usuario.hash != undefined) {
+      password = usuario.hash!;
+    } else {
+      password = "";
+    }
+
+    usuario.hash = this.hasher(password, usuario.salt);
+    this.db<Usuario>("usuario")
+      .insert({
+        email: usuario.email,
+        experiencia: 0,
+        hash: usuario.hash,
+        nUsuario: usuario.nUsuario,
+        nivel: 1,
+        salt: usuario.salt,
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }
