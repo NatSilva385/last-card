@@ -25,6 +25,11 @@ public class FrmInicial : Control
             numeroDaSala = response.GetValue<string>();
         });
 
+        client.On("carrega-jogo", response =>
+        {
+            GD.Print("Começar a carregar");
+        });
+
         await client.ConnectAsync();
 
         NovoJogoReq newJogo = new NovoJogoReq();

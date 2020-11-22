@@ -63,13 +63,13 @@ io.on("connection", (socket: Socket) => {
         maxNumUsers: msg.QtdeJogadores,
         qtdeUser: 1,
         name: "",
-        jogo: new Jogo(salas[salaEscolhida]),
       };
     }
 
     socket.join(salaEscolhida);
     salas[salaEscolhida].name = salaEscolhida;
-    salas[salaEscolhida].jogo?.esperaJogadores();
+    salas[salaEscolhida].jogo = new Jogo(salas[salaEscolhida], io);
+    salas[salaEscolhida].jogo!.esperaJogadores();
     socket.emit("sala-numero", salaEscolhida);
   });
 });
