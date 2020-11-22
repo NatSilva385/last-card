@@ -4,6 +4,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Socket } from "socket.io";
+import { v4 } from "uuid";
 
 let app = express();
 
@@ -28,9 +29,43 @@ app.post("/usuarios/create", jsonParser, (req, res) => {
   res.status(201).send("Usuário inserido com sucesso");
 });
 
+interface Sala {
+  maxNumUsers: number;
+  qtdeUser: number;
+  name: string;
+}
+
+interface SalaArray {
+  [index: string]: Sala;
+}
+
+let salas: SalaArray = {};
+
 io.on("connection", (socket: Socket) => {
   socket.on("Novo-Jogador", (msg) => {
-    console.log("Usuário solicitou um novo jogo");
+    let salaEscolhida = "";
+    let salasOcupadas = Object.keys(salas).map((key) => salas[key]);
+
+    for (let i = 0; i < salasOcupadas.length; i++) {
+      if (salasOcupadas[i].maxNumUsers < salasOcupadas[i].qtdeUser) {
+        if (salasOcupadas[i].maxNumUsers == msg.QtdeJogadores) {
+          salaEscolhida = salasOcupadas[i].name;
+          salasOcupadas[i].qtdeUser++;
+        }
+      }
+    }
+
+    if (salaEscolhida == "") {
+      salaEscolhida = v4();
+      salas[salaEscolhida] = {
+        maxNumUsers: msg.QtdeJogadores,
+        qtdeUser: 1,
+        name: "",
+      };
+    }
+
+    socket.join(salaEscolhida);
+    socket.emit("sala-numero", salaEscolhida);
   });
 });
 
