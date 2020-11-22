@@ -1,0 +1,83 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://assets/texture/spinner/carregando/carregando.tres" type="Texture" id=1]
+[ext_resource path="res://src/forms/FrmInicial.cs" type="Script" id=2]
+
+[node name="TelaInicial" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="CenterContainer" type="CenterContainer" parent="PanelContainer"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 1017.0
+margin_bottom = 593.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/CenterContainer"]
+margin_left = 415.0
+margin_top = 271.0
+margin_right = 595.0
+margin_bottom = 315.0
+
+[node name="btnBuscarDois" type="Button" parent="PanelContainer/CenterContainer/VBoxContainer"]
+margin_right = 180.0
+margin_bottom = 20.0
+text = "Buscar Partida 2 Jogadores"
+
+[node name="btnBuscarQuatro" type="Button" parent="PanelContainer/CenterContainer/VBoxContainer"]
+margin_top = 24.0
+margin_right = 180.0
+margin_bottom = 44.0
+text = "Buscar Partida 4 Jogadores"
+
+[node name="LoadingDialog" type="WindowDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -94.0
+margin_top = -66.5
+margin_right = 94.0
+margin_bottom = 66.5
+
+[node name="MarginContainer" type="MarginContainer" parent="LoadingDialog"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="LoadingDialog/MarginContainer"]
+margin_right = 188.0
+margin_bottom = 133.0
+
+[node name="MarginContainer" type="MarginContainer" parent="LoadingDialog/MarginContainer/VBoxContainer"]
+margin_right = 188.0
+margin_bottom = 14.0
+
+[node name="Label" type="Label" parent="LoadingDialog/MarginContainer/VBoxContainer/MarginContainer"]
+margin_right = 188.0
+margin_bottom = 14.0
+text = "Carregando"
+align = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="LoadingDialog/MarginContainer/VBoxContainer"]
+margin_top = 18.0
+margin_right = 188.0
+margin_bottom = 133.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="NinePatchRect" type="NinePatchRect" parent="LoadingDialog/MarginContainer/VBoxContainer/CenterContainer"]
+margin_left = 43.0
+margin_top = 7.0
+margin_right = 143.0
+margin_bottom = 107.0
+rect_min_size = Vector2( 100, 100 )
+texture = ExtResource( 1 )
+[connection signal="pressed" from="PanelContainer/CenterContainer/VBoxContainer/btnBuscarDois" to="." method="_on_btnBuscarDois_pressed"]
