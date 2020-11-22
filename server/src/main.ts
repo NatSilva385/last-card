@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Socket } from "socket.io";
 import { v4 } from "uuid";
+import { Jogo } from "./jogo/jogo";
 
 let app = express();
 
@@ -29,10 +30,11 @@ app.post("/usuarios/create", jsonParser, (req, res) => {
   res.status(201).send("Usuário inserido com sucesso");
 });
 
-interface Sala {
+export interface Sala {
   maxNumUsers: number;
   qtdeUser: number;
   name: string;
+  jogo?: Jogo;
 }
 
 interface SalaArray {
@@ -61,10 +63,13 @@ io.on("connection", (socket: Socket) => {
         maxNumUsers: msg.QtdeJogadores,
         qtdeUser: 1,
         name: "",
+        jogo: new Jogo(salas[salaEscolhida]),
       };
     }
 
     socket.join(salaEscolhida);
+    salas[salaEscolhida].name = salaEscolhida;
+    salas[salaEscolhida].jogo?.esperaJogadores();
     socket.emit("sala-numero", salaEscolhida);
   });
 });
