@@ -6,6 +6,7 @@ import { createServer } from "http";
 import { Socket } from "socket.io";
 import { v4 } from "uuid";
 import { Jogo } from "./jogo/jogo";
+import { getDefaultSettings } from "http2";
 
 let app = express();
 
@@ -49,7 +50,8 @@ io.on("connection", (socket: Socket) => {
     let salasOcupadas = Object.keys(salas).map((key) => salas[key]);
 
     for (let i = 0; i < salasOcupadas.length; i++) {
-      if (salasOcupadas[i].maxNumUsers < salasOcupadas[i].qtdeUser) {
+      console.log(salasOcupadas[i].name);
+      if (salasOcupadas[i].maxNumUsers > salasOcupadas[i].qtdeUser) {
         if (salasOcupadas[i].maxNumUsers == msg.QtdeJogadores) {
           salaEscolhida = salasOcupadas[i].name;
           salasOcupadas[i].qtdeUser++;
@@ -59,16 +61,17 @@ io.on("connection", (socket: Socket) => {
 
     if (salaEscolhida == "") {
       salaEscolhida = v4();
+      console.log("Sala escolhida " + salaEscolhida);
       salas[salaEscolhida] = {
         maxNumUsers: msg.QtdeJogadores,
         qtdeUser: 1,
         name: "",
       };
+      salas[salaEscolhida].jogo = new Jogo(salas[salaEscolhida], io);
     }
 
     socket.join(salaEscolhida);
     salas[salaEscolhida].name = salaEscolhida;
-    salas[salaEscolhida].jogo = new Jogo(salas[salaEscolhida], io);
     salas[salaEscolhida].jogo!.esperaJogadores();
     socket.emit("sala-numero", salaEscolhida);
   });

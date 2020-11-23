@@ -74,9 +74,9 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="NinePatchRect" type="NinePatchRect" parent="LoadingDialog/MarginContainer/VBoxContainer/CenterContainer"]
-margin_left = 43.0
+margin_left = 44.0
 margin_top = 7.0
-margin_right = 143.0
+margin_right = 144.0
 margin_bottom = 107.0
 rect_min_size = Vector2( 100, 100 )
 texture = ExtResource( 1 )

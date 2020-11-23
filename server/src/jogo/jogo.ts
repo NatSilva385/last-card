@@ -7,6 +7,7 @@ export class Jogo {
   private vezesEsperada = 0;
   private maxVezesEsperada = 4;
   private io: any;
+  private esperandoJogador = false;
 
   constructor(sala: Sala, io: any) {
     this.baralho = new Baralho();
@@ -21,18 +22,22 @@ export class Jogo {
   }
 
   async esperaJogadores() {
-    while (true) {
-      if (this.sala.maxNumUsers < this.sala.qtdeUser) {
-        this.vezesEsperada++;
-        if (this.vezesEsperada > this.maxVezesEsperada) {
+    if (!this.esperandoJogador) {
+      this.esperandoJogador = true;
+      while (true) {
+        if (this.sala.maxNumUsers > this.sala.qtdeUser) {
+          this.vezesEsperada++;
+          if (this.vezesEsperada > this.maxVezesEsperada) {
+            this.io.to(this.sala.name).emit("carrega-jogo");
+            break;
+          } else {
+            console.log(`Começando a esperar vez número ${this.vezesEsperada}`);
+            await this.timeout(5801);
+          }
+        } else {
           this.io.to(this.sala.name).emit("carrega-jogo");
           break;
-        } else {
-          await this.timeout(1801);
         }
-      } else {
-        this.io.to(this.sala.name).emit("carrega-jogo");
-        break;
       }
     }
   }
