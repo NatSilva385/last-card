@@ -153,8 +153,8 @@ export class Jogo {
   }
 
   comecarTurno() {
-    this.comecaTurno = true;
-    this.esperaJogada = false;
+    this.comecaTurno = false;
+    this.esperaJogada = true;
     if (this.turnoAtual > this.ordemJogadas.length) {
       this.turnoAtual = 0;
     }
@@ -196,21 +196,27 @@ export class Jogo {
       cartas: [],
       jogadorId: this.turnoAtual,
     };
-
+    console.log("comecando turno");
     turno.cartas.forEach((carta) => turnoOutros.cartas.push(carta));
-
-    this.io
-      .to(this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].SocketID)
-      .emit("comecar-turno", turno);
-    this.io
-      .to(this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].SocketID)
-      .broadcast.emit("comecar-turno", turnoOutros);
+    if (
+      !this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
+        .ControladoComputador
+    ) {
+      this.io
+        .to(this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].SocketID)
+        .emit("comecar-turno", turno);
+      this.io
+        .to(this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].SocketID)
+        .broadcast.emit("comecar-turno", turnoOutros);
+    } else {
+      this.io.to(this.sala.name).emit("comecar-turno", turnoOutros);
+    }
   }
 
   async aguardar() {
     if (!this.aguardando) {
       while (true) {
-        this.aguardando = false;
+        this.aguardando = true;
         let carregando = false;
         for (let i = 0; i < this.sala.jogadores.length; i++) {
           if (!this.sala.jogadores[i].ControladoComputador) {
@@ -223,14 +229,14 @@ export class Jogo {
         if (carregando) {
           await this.timeout(100);
         } else {
-          this.aguardando = false;
+          console.log("aqui");
           if (this.comecaTurno) {
             this.comecaTurno = false;
             this.esperaJogada = true;
+            this.comecarTurno();
           } else {
             this.comecaTurno = true;
             this.esperaJogada = false;
-            this.comecarTurno();
           }
           break;
         }

@@ -3,6 +3,7 @@ using System;
 using project.src.models;
 using System.Collections.Generic;
 using SocketIOClient;
+using System.Threading.Tasks;
 public class JogoView : Spatial
 {
     BaralhoView baralho;
@@ -137,13 +138,44 @@ public class JogoView : Spatial
                     jogador.addCartas(baralho.comprarCartas(listaDeCartas));
                 }
             }
+            aguardarAnimacaoCompra();
         });
+
+        Client.On("comecar-turno", response =>
+        {
+            GD.Print(response.ToString());
+        });
+
     }
 
     public void init()
     {
     }
 
+
+    private async void aguardarAnimacaoCompra()
+    {
+        while (true)
+        {
+            bool completo = true;
+            foreach (var mao in ordemJogada)
+            {
+                if (!mao.TerminouAnimacao)
+                {
+                    completo = false;
+                }
+            }
+
+            if (completo)
+            {
+                await Client.EmitAsync("terminar-aguardar", NumeroSala);
+            }
+            else
+            {
+                await Task.Delay(100);
+            }
+        }
+    }
     public void comprarCarta(CartaView carta)
     {
         mao.addCarta(carta);
@@ -160,4 +192,9 @@ public class CartaRecebida
 {
     public int _cor { get; set; }
     public int _valor { get; set; }
+}
+
+public class ComecoTurno
+{
+    public int jogadorId { get; set; }
 }

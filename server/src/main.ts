@@ -107,7 +107,7 @@ io.on("connection", (socket: Socket) => {
     });
   });
 
-  socket.on("terminar-turno", (msg) => {
+  socket.on("terminar-aguardar", (msg) => {
     salas[msg].jogo!.aguardar();
     salas[msg].jogadores.forEach((jogador) => {
       if (jogador.SocketID == socket.id) {
