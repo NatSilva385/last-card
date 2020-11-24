@@ -65,7 +65,7 @@ export class Jogador {
   possuiCarta(carta: Carta): boolean {
     let possui = false;
     this.Mao.forEach((c) => {
-      if (c == carta) {
+      if (c.Cor == carta.Cor && c.Valor == carta.Valor) {
         possui = true;
       }
     });

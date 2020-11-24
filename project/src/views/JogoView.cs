@@ -217,7 +217,7 @@ public class JogoView : Spatial
                      jogada.carta = null;
                      jogada.sala = NumeroSala;
                      jogada.jogadorId = jogadorPosicao;
-                     await Client.EmitAsync("jogada", jogada);
+                     await Client.EmitAsync("jogada", ack=>{}, jogada);
                  }
              }
          });
@@ -293,7 +293,10 @@ public class JogoView : Spatial
         bool resp = false;
         await Client.EmitAsync("jogada", response =>
         {
-            resp = response.GetValue<bool>();
+            if(response.GetValue<string>()=="True")
+            {
+                resp = true;
+            }
         }, jogada);
         GD.Print(resp);
         if (resp)

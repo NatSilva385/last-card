@@ -21,12 +21,15 @@ export class Carta {
   }
 
   podeJogar(carta: Carta): boolean {
-    if (carta.Cor == this.Cor || carta.Valor == this.Valor) {
+    if (
+      (carta.Cor as number) === (this.Cor as number) ||
+      (carta.Valor as number) === (this.Valor as number)
+    ) {
       return true;
     }
     if (
-      this.Valor == VALOR.CORINGA ||
-      this.Valor == VALOR.CORINGA_MAIS_QUATRO
+      (this.Valor as number) === (VALOR.CORINGA as number) ||
+      (this.Valor as number) === (VALOR.CORINGA_MAIS_QUATRO as number)
     ) {
       return true;
     }
