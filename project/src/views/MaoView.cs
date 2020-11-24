@@ -1,7 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-
+using project.src.models;
 public class MaoView : Spatial
 {
     public JogoView Jogo { get; set; }
@@ -97,6 +97,47 @@ public class MaoView : Spatial
     private void _on_Tween_tween_all_completed()
     {
         TerminouAnimacao = true;
+    }
+
+    public void removeCarta(Carta carta)
+    {
+        CartaView cartaView = null;
+        for (int i = 0; i < handCartas.Count; i++)
+        {
+            if (handCartas[i].Carta.Cor == carta.Cor && handCartas[i].Carta.Valor == carta.Valor)
+            {
+                cartaView = handCartas[i];
+            }
+        }
+        if (cartaView == null)
+        {
+            var rnd = new RandomNumberGenerator();
+            rnd.Randomize();
+            var i = rnd.RandiRange(0, handCartas.Count - 1);
+            cartaView = handCartas[i];
+            cartaView.Carta = carta;
+        }
+        GD.Print(cartaView);
+        handCartas.Remove(cartaView);
+        organizar();
+
+        Jogo.animarCarta(cartaView);
+    }
+
+    private void organizar()
+    {
+        TerminouAnimacao = false;
+        int lastIndice = handCartas.Count - 1;
+        var novasPosicoes = calculaPosicoes();
+        var rotacao = this.RotationDegrees;
+        var tween = GetNode<Tween>("Tween");
+        for (int i = 0; i < handCartas.Count; i++)
+        {
+
+            tween.InterpolateProperty(handCartas[i], "translation", handCartas[i].Translation, novasPosicoes[i], 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
+            tween.InterpolateProperty(handCartas[i], "rotation_degrees", handCartas[i].RotationDegrees, rotacao, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
+        }
+        tween.Start();
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -120,10 +120,13 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("jogada", (msg: Jogada, ack) => {
-    let joga = salas[msg.sala].jogo!.podeJogarCarta(msg.carta, msg.jogadorId);
+    let carta: Carta = new Carta();
+    carta.Cor = msg.carta.Cor;
+    carta.Valor = msg.carta.Valor;
+    let joga = salas[msg.sala].jogo!.podeJogarCarta(carta, msg.jogadorId);
     ack(joga);
     if (joga) {
-      salas[msg.sala].jogo!.podeJogarCarta(msg.carta, msg.jogadorId);
+      salas[msg.sala].jogo!.podeJogarCarta(carta, msg.jogadorId);
     }
   });
 
@@ -174,7 +177,7 @@ server.listen(port, () => {
   console.log(`Servidor está escutando na porta ${port}`);
 });
 
-interface Jogada {
+export interface Jogada {
   carta: Carta;
   jogadorId: number;
   sala: string;

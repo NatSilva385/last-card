@@ -30,6 +30,7 @@ public class JogoView : Spatial
         mao.Jogo = this;
 
         descarte = GetNode<DescarteView>("Descarte");
+        descarte.Jogo = this;
 
         //adversario = GetNode<MaoView>("MaoJogador2");
         await Client.EmitAsync("terminou-carregar", NumeroSala);
@@ -184,7 +185,13 @@ public class JogoView : Spatial
 
         Client.On("jogada", response =>
         {
-            GD.Print("Jogada " + response.ToString());
+            GD.Print(response.ToString());
+            var jogada = response.GetValue<Jogada>();
+            Carta carta = new Carta();
+            carta.Cor = (COR)jogada.carta._cor;
+            carta.Valor = (VALOR)jogada.carta._valor;
+            ordemJogada[jogada.jogadorId].removeCarta(carta);
+            aguardarAnimacaoCompra();
         });
 
     }
@@ -219,6 +226,11 @@ public class JogoView : Spatial
             }
         }
     }
+
+    public async void terminouAnimacaoJogada()
+    {
+        await Client.EmitAsync("terminar-aguardar", NumeroSala);
+    }
     public void comprarCarta(CartaView carta)
     {
         mao.addCarta(carta);
@@ -237,13 +249,23 @@ public class JogoView : Spatial
         jogada.carta = c;
         jogada.jogadorId = jogadorPosicao;
         jogada.sala = NumeroSala;
-        string resp = "";
+        bool resp = false;
         await Client.EmitAsync("jogada", response =>
         {
-            resp = response.ToString();
+            resp = response.GetValue<bool>();
         }, jogada);
         GD.Print(resp);
+        if (resp)
+        {
+            ordemJogada[jogadorPosicao].removeCarta(carta.Carta);
+            aguardarAnimacaoCompra();
+        }
         //descarte.addCarta(carta);
+    }
+
+    public void animarCarta(CartaView carta)
+    {
+        descarte.addCarta(carta);
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -1,5 +1,5 @@
 import { v4 } from "uuid";
-import { Sala } from "../main";
+import { Jogada, Sala } from "../main";
 import { Baralho } from "./baralho";
 import { Carta } from "./carta";
 import { Descarte } from "./descarte";
@@ -284,9 +284,15 @@ export class Jogo {
       );
       this.descarte.adicionarCarta(carta);
 
+      let jogada: Jogada = {
+        carta: carta,
+        sala: this.sala.name,
+        jogadorId: this.turnoAtual,
+      };
+
       /**transmite a jogada para os outros jogadores */
       console.log("PC jogou " + carta);
-      this.io.to(this.sala.name).emit("jogada", carta);
+      this.io.to(this.sala.name).emit("jogada", jogada);
     }
 
     /**inicia a espera para finalizar as animações */
@@ -308,7 +314,7 @@ export class Jogo {
     }
 
     /**checa se a carta existe na mao do jogador */
-    let achou = false;
+    /* let achou = false;
     for (let i = 0; i < this.sala.jogadores[jogadorId].Mao.length; i++) {
       if (
         this.sala.jogadores[jogadorId].Mao[i].Cor == carta.Cor &&
@@ -320,7 +326,7 @@ export class Jogo {
     }
     if (!achou) {
       return false;
-    }
+    }*/
 
     /**checa se existe alguma carta no descarta */
     if (this.descarte.cartaNoTopo() == undefined) {
@@ -362,10 +368,16 @@ export class Jogo {
     console.log(this.sala.jogadores[jogadorId].Mao);
     this.descarte.adicionarCarta(carta);
 
+    let jogada: Jogada = {
+      carta: carta,
+      jogadorId: jogadorId,
+      sala: this.sala.name,
+    };
+
     /**notifica para os outros jogadores da jogada realizada */
     this.sala.jogadores[jogadorId]
       .Socket!.to(this.sala.name)
-      .emit("jogada", carta);
+      .emit("jogada", jogada);
 
     /**inicia a espera para finalizar as animações */
     this.comecaTurno = false;
@@ -413,6 +425,14 @@ export class Jogo {
             this.aguardaJogada = false;
             this.io.to(this.sala.name).emit("comecar-jogada", this.turnoAtual);
             this.jogadaComputador();
+          } else if (this.aguardaJogada) {
+            console.log("comecar turno");
+            this.comecaTurno = false;
+            this.aguardaComecaTurno = true;
+            this.jogada = false;
+            this.aguardaJogada = false;
+            this.turnoAtual++;
+            this.comecarTurno();
           }
           break;
         }

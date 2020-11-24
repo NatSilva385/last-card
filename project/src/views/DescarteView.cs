@@ -40,4 +40,9 @@ public class DescarteView : Spatial
         cartasDescartadas.Add(carta);
     }
 
+    private void _on_Tween_tween_all_completed()
+    {
+        Jogo.terminouAnimacaoJogada();
+    }
+
 }
