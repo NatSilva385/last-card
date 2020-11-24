@@ -45,7 +45,6 @@ public class JogoView : Spatial
                 listaDeCartas.Add(c);
             }
             mao.addCartas(baralho.comprarCartas(listaDeCartas));
-            GD.Print(response.GetValue(1).ToString());
             var ordem = response.GetValue<String[]>(1);
             listaDeCartas.Clear();
             foreach (var carta in cartas)
@@ -65,6 +64,7 @@ public class JogoView : Spatial
                     var mao2 = GetNode<MaoView>("MaoJogador2");
                     mao2.ID = ordem[1];
                     ordemJogada.Add(mao2);
+                    GD.Print("Você joga primeiro");
                 }
                 else
                 {
@@ -72,6 +72,7 @@ public class JogoView : Spatial
                     mao2.ID = ordem[0];
                     ordemJogada.Add(mao2);
                     ordemJogada.Add(mao);
+                    GD.Print("Você joga segundo");
                 }
             }
             else
@@ -132,7 +133,6 @@ public class JogoView : Spatial
             }
             foreach (var jogador in ordemJogada)
             {
-                GD.Print(jogador.ID);
                 if (jogador.ID != ID)
                 {
                     jogador.addCartas(baralho.comprarCartas(listaDeCartas));
@@ -169,6 +169,7 @@ public class JogoView : Spatial
             if (completo)
             {
                 await Client.EmitAsync("terminar-aguardar", NumeroSala);
+                break;
             }
             else
             {
