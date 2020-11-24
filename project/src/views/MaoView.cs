@@ -20,6 +20,17 @@ public class MaoView : Spatial
     public float distanciaCartas = 0.001f;
     private List<CartaView> handCartas = new List<CartaView>();
 
+    public bool podeJogar(Carta carta)
+    {
+        for (int i = 0; i < handCartas.Count; i++)
+        {
+            if (handCartas[i].Carta.podeJogar(carta))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
     public void addCartas(List<CartaView> cartas)
     {
         TerminouAnimacao = false;

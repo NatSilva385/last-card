@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using project.src.models;
 /// <summary>
 /// Armazena as cartas usadas pelos jogadores durante a partida
 /// </summary>
@@ -23,6 +24,16 @@ public class DescarteView : Spatial
 
     }
 
+    public Carta ultimaCarta()
+    {
+        if (cartasDescartadas.Count == 0)
+        {
+            return null;
+        }
+        int ultimoIndice = cartasDescartadas.Count - 1;
+        CartaView carta = cartasDescartadas[ultimoIndice];
+        return carta.Carta;
+    }
     public void addCarta(CartaView carta)
     {
         GD.Print("Carta Descartada");
