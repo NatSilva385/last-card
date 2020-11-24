@@ -197,7 +197,16 @@ export class Jogo {
       jogadorId: this.turnoAtual,
     };
     console.log("comecando turno");
-    turno.cartas.forEach((carta) => turnoOutros.cartas.push(carta));
+    /**
+     * Coloca cartas vazias na carta a ser enviada aos jogadores que não vão jogar no turno atual
+     */
+    turno.cartas.forEach((carta) => turnoOutros.cartas.push(new Carta()));
+
+    /**
+     * Checa para ver se o jogador do turno atual é um computador,
+     * caso não seja envia a carta comprada ao jogador do turno atual
+     * caso o jogador seja controlado pelo computador, envia as cartas vazias a todos os jogadores da sala
+     */
     if (
       !this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
         .ControladoComputador
@@ -213,6 +222,9 @@ export class Jogo {
     }
   }
 
+  /**
+   * Espera os jogadores
+   */
   async aguardar() {
     if (!this.aguardando) {
       while (true) {
