@@ -152,6 +152,10 @@ export class Jogo {
     }
   }
 
+  /**
+   * Método que lida com o começo do turno, checando se o jogador precisa comprar alguma carta e
+   * e sinalizando que pode começar
+   */
   comecarTurno() {
     this.comecaTurno = false;
     this.esperaJogada = true;
@@ -163,9 +167,11 @@ export class Jogo {
       jogadorId: this.turnoAtual,
       cartas: [],
     };
+    /**Checa se alguma carta já foi jogada*/
     if (this.descarte.cartaNoTopo() == undefined) {
       podeJogarCarta = true;
     } else {
+      /**caso já tenha sido jogada alguma carta, checa se o jogador atual precisa comprar uma nova carta */
       for (
         let i = 0;
         i <
@@ -180,6 +186,7 @@ export class Jogo {
       }
     }
 
+    /**Se o jogador precisar comprar uma carta, compra */
     if (!podeJogarCarta) {
       let carta = this.baralho.comprarCarta();
       this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.push(
@@ -188,15 +195,20 @@ export class Jogo {
       turno.cartas.push(carta);
     }
 
+    /**
+     * prepara os jogadores para aguardar a animação concluir
+     */
     for (let i = 0; i < this.sala.jogadores.length; i++) {
       this.sala.jogadores[i].Aguardando = true;
     }
 
+    /**
+     * Informação que será enviada aos outros jogadores indicando quantas cartas o jogador do turno atual comprou
+     */
     let turnoOutros: ComecoTurno = {
       cartas: [],
       jogadorId: this.turnoAtual,
     };
-    console.log("comecando turno");
     /**
      * Coloca cartas vazias na carta a ser enviada aos jogadores que não vão jogar no turno atual
      */
