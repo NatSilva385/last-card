@@ -8,6 +8,7 @@ import { v4 } from "uuid";
 import { Jogo } from "./jogo/jogo";
 import { getDefaultSettings } from "http2";
 import { Jogador } from "./jogo/jogador";
+import { Carta } from "./jogo/carta";
 
 let app = express();
 
@@ -71,6 +72,7 @@ io.on("connection", (socket: Socket) => {
             new Jogador(socket.id, msg.NomeJogador)
           );
           salasOcupadas[i].jogadores![i].ControladoComputador = false;
+          salasOcupadas[i].jogadores![i].Socket = socket;
           salasOcupadas[i].qtdeUser++;
         }
       }
@@ -90,6 +92,7 @@ io.on("connection", (socket: Socket) => {
         new Jogador(socket.id, msg.NomeJogador)
       );
       salas[salaEscolhida].jogadores[x - 1].ControladoComputador = false;
+      salas[salaEscolhida].jogadores[x - 1].Socket = socket;
     }
 
     socket.join(salaEscolhida);
@@ -114,6 +117,10 @@ io.on("connection", (socket: Socket) => {
         jogador.Aguardando = false;
       }
     });
+  });
+
+  socket.on("jogada", (msg: Jogada, ack) => {
+    ack(salas[msg.sala].jogo!.podeJogarCarta(msg.carta, msg.jogadorId));
   });
 
   socket.on("disconnect", (msg) => {
@@ -162,3 +169,9 @@ io.on("connection", (socket: Socket) => {
 server.listen(port, () => {
   console.log(`Servidor está escutando na porta ${port}`);
 });
+
+interface Jogada {
+  carta: Carta;
+  jogadorId: number;
+  sala: string;
+}

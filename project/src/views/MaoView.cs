@@ -28,6 +28,7 @@ public class MaoView : Spatial
         for (int i = 0; i < cartas.Count; i++)
         {
             handCartas.Add(cartas[i]);
+            cartas[i].Jogo = Jogo;
         }
         var novasPosicoes = calculaPosicoes();
         var rotacao = this.RotationDegrees;

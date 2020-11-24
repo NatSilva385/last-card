@@ -18,7 +18,9 @@ export class Jogo {
   private descarte: Descarte;
   private aguardando = false;
   private comecaTurno = true;
-  private esperaJogada = false;
+  private aguardaComecaTurno = false;
+  private jogada = false;
+  private aguardaJogada = false;
 
   private _destruir = false;
   public get Destruir() {
@@ -157,8 +159,12 @@ export class Jogo {
    * e sinalizando que pode começar
    */
   comecarTurno() {
+    console.log("funcao comecar turno");
     this.comecaTurno = false;
-    this.esperaJogada = true;
+    this.aguardaComecaTurno = true;
+    this.jogada = false;
+    this.aguardaJogada = false;
+    this.aguardando = false;
     if (this.turnoAtual > this.ordemJogadas.length) {
       this.turnoAtual = 0;
     }
@@ -226,19 +232,82 @@ export class Jogo {
       this.io
         .to(this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].SocketID)
         .emit("comecar-turno", turno);
-      this.io
-        .to(this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].SocketID)
-        .broadcast.emit("comecar-turno", turnoOutros);
+      this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
+        .Socket!.to(this.sala.name)
+        .emit("comecar-turno", turnoOutros);
     } else {
       this.io.to(this.sala.name).emit("comecar-turno", turnoOutros);
     }
   }
 
   /**
-   * Espera os jogadores
+   * Joga uma carta para o jogador do turno atual caso ele seja controlado pelo computador
+   */
+  async jogadaComputador() {
+    if (
+      this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
+        .ControladoComputador
+    ) {
+      await this.timeout(2000);
+      let carta: Carta = new Carta();
+      if (this.descarte.cartaNoTopo() == undefined) {
+        carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
+          .Mao[0];
+      } else {
+        for (
+          let i = 0;
+          i <
+          this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.length;
+          i++
+        ) {
+          if (
+            this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[
+              i
+            ].podeJogar(this.descarte.cartaNoTopo()!)
+          ) {
+            carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
+              .Mao[i];
+            break;
+          }
+        }
+      }
+      console.log("PC jogou " + carta);
+      this.io.to(this.sala.name).emit("jogada", carta);
+    }
+
+    this.comecaTurno = false;
+    this.aguardaComecaTurno = false;
+    this.jogada = false;
+    this.aguardaJogada = true;
+  }
+
+  /**Checa se a carta que será jogada pode ser usada
+   * @returns retorna se é possivel ou não jogar a carta
+   */
+  podeJogarCarta(carta: Carta, jogadorId: number): boolean {
+    /**checa para ver ser o jogador que está tentando jogar é o atual */
+    if (jogadorId != this.turnoAtual) {
+      return false;
+    }
+    /**checa se existe alguma carta no descarta */
+    if (this.descarte.cartaNoTopo() == undefined) {
+      return true;
+    }
+    /**checa se é possivel jogar a carta selecionada */
+    if (this.sala.jogadores[jogadorId].possuiCarta(carta)) {
+      if (carta.podeJogar(this.descarte.cartaNoTopo()!)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Espera os jogadores concluirem as animações para ir para a proxima etapa
    */
   async aguardar() {
     if (!this.aguardando) {
+      console.log("comecnado a aguardar");
       while (true) {
         this.aguardando = true;
         let carregando = false;
@@ -253,14 +322,25 @@ export class Jogo {
         if (carregando) {
           await this.timeout(100);
         } else {
+          this.sala.jogadores.forEach((jogador) => {
+            jogador.Aguardando = true;
+          });
           console.log("aqui");
           if (this.comecaTurno) {
+            console.log("comecar turno");
             this.comecaTurno = false;
-            this.esperaJogada = true;
+            this.aguardaComecaTurno = true;
+            this.jogada = false;
+            this.aguardaJogada = false;
             this.comecarTurno();
-          } else {
-            this.comecaTurno = true;
-            this.esperaJogada = false;
+          } else if (this.aguardaComecaTurno) {
+            console.log("comecar a jogar");
+            this.comecaTurno = false;
+            this.aguardaComecaTurno = false;
+            this.jogada = true;
+            this.aguardaJogada = false;
+            this.io.to(this.sala.name).emit("comecar-jogada", this.turnoAtual);
+            this.jogadaComputador();
           }
           break;
         }

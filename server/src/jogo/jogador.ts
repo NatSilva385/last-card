@@ -1,3 +1,4 @@
+import { Socket } from "socket.io";
 import { Carta } from "./carta";
 
 export class Jogador {
@@ -49,8 +50,25 @@ export class Jogador {
     this._aguardando = value;
   }
 
+  private _socket: Socket | undefined;
+  public get Socket(): Socket | undefined {
+    return this._socket;
+  }
+  public set Socket(value: Socket | undefined) {
+    this._socket = value;
+  }
   constructor(socketID: string, name: string) {
     this._socketID = socketID;
     this._name = name;
+  }
+
+  possuiCarta(carta: Carta): boolean {
+    let possui = false;
+    this.Mao.forEach((c) => {
+      if (c == carta) {
+        possui = true;
+      }
+    });
+    return possui;
   }
 }
