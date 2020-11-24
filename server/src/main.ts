@@ -120,15 +120,22 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("jogada", (msg, ack) => {
-    let carta: Carta = new Carta();
-    carta.Cor = msg.carta._cor;
-    carta.Valor = msg.carta._valor;
+    let joga = false;
+    let carta: Carta | undefined;
+
     console.log(msg);
-    let joga = salas[msg.sala].jogo!.podeJogarCarta(carta, msg.jogadorId);
+    if (msg.carta == null) {
+      joga = true;
+    } else {
+      carta = new Carta();
+      carta.Cor = msg.carta._cor;
+      carta.Valor = msg.carta._valor;
+      joga = salas[msg.sala].jogo!.podeJogarCarta(carta, msg.jogadorId);
+    }
     ack(joga);
     if (joga) {
       console.log("Carta jogada");
-      salas[msg.sala].jogo!.podeJogarCarta(carta, msg.jogadorId);
+      salas[msg.sala].jogo!.jogaCarta(carta, msg.jogadorId);
     }
   });
 
@@ -180,7 +187,7 @@ server.listen(port, () => {
 });
 
 export interface Jogada {
-  carta: Carta;
+  carta: Carta | undefined;
   jogadorId: number;
   sala: string;
 }

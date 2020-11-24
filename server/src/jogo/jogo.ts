@@ -251,7 +251,7 @@ export class Jogo {
     ) {
       /**espera para simular um jogador decidindo qual carta jogar */
       let i = 0;
-      await this.timeout(2000);
+      await this.timeout(500);
       let carta: Carta = new Carta();
       /**se nenhuma carta tiver sido jogada o computador escolhe a primeira carta da sua mão */
       if (this.descarte.cartaNoTopo() == undefined) {
@@ -348,33 +348,35 @@ export class Jogo {
    * @param carta a carta que será jogada
    * @param jogadorId o id do jogador que está jogando a carta
    */
-  jogaCarta(carta: Carta, jogadorId: number) {
+  jogaCarta(carta: Carta | undefined, jogadorId: number) {
     /**checa se é possivel jogar a carta */
-    if (!this.podeJogarCarta(carta, jogadorId)) {
+    /*if (!this.podeJogarCarta(carta, jogadorId)) {
       return;
     }
 
     /**localiza a carta na mão do jogador */
-    let i = 0;
-    for (
-      i = 0;
-      i < this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao.length;
-      i++
-    ) {
-      if (
-        this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao[i].Cor ==
-          carta.Cor &&
-        this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao[i].Valor ==
-          carta.Valor
+    if (carta != undefined) {
+      let i = 0;
+      for (
+        i = 0;
+        i < this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao.length;
+        i++
       ) {
-        break;
+        if (
+          this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao[i].Cor ==
+            carta.Cor &&
+          this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao[i].Valor ==
+            carta.Valor
+        ) {
+          break;
+        }
       }
-    }
 
-    /**remove a carta da mão do jogador e a adiciona no descarte */
-    this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao.splice(i, 1);
-    console.log(this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao);
-    this.descarte.adicionarCarta(carta);
+      /**remove a carta da mão do jogador e a adiciona no descarte */
+      this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao.splice(i, 1);
+      console.log(this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao);
+      this.descarte.adicionarCarta(carta);
+    }
 
     let jogada: Jogada = {
       carta: carta,
