@@ -2,6 +2,18 @@ namespace project.src.models
 {
     public class Carta
     {
+        public bool podeJogar(Carta carta)
+        {
+            if (carta.Cor == this.Cor || carta.Valor == this.Valor)
+            {
+                return true;
+            }
+            if (this.Valor == VALOR.CORINGA || this.Valor == VALOR.CORINGA_MAIS_QUATRO)
+            {
+                return true;
+            }
+            return false;
+        }
 
 
         public COR Cor

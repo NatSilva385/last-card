@@ -195,11 +195,32 @@ public class JogoView : Spatial
             aguardarAnimacaoCompra();
         });
 
-        Client.On("comecar-jogada", response =>
-        {
-            GD.Print("Comeca jogada " + response.ToString());
-            PodeJogar = true;
-        });
+        Client.On("comecar-jogada", async response =>
+         {
+             GD.Print("Comeca jogada " + response.ToString());
+             var carta = descarte.ultimaCarta();
+             if (carta == null)
+             {
+                 PodeJogar = true;
+             }
+             else
+             {
+                 if (ordemJogada[jogadorPosicao].podeJogar(carta))
+                 {
+                     PodeJogar = true;
+                 }
+                 else
+                 {
+                     PodeJogar = false;
+                     await Task.Delay(500);
+                     Jogada jogada = new Jogada();
+                     jogada.carta = null;
+                     jogada.sala = NumeroSala;
+                     jogada.jogadorId = jogadorPosicao;
+                     await Client.EmitAsync("jogada", jogada);
+                 }
+             }
+         });
 
         Client.On("jogada", response =>
         {
