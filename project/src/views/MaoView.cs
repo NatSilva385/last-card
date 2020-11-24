@@ -6,6 +6,8 @@ public class MaoView : Spatial
 {
     public JogoView Jogo { get; set; }
 
+    public string ID { get; set; }
+
     [Export]
     public float larguraCarta = 1.4f;
 
@@ -16,15 +18,40 @@ public class MaoView : Spatial
     public float distanciaCartas = 0.001f;
     private List<CartaView> handCartas = new List<CartaView>();
 
+    public void addCartas(List<CartaView> cartas)
+    {
+        int lastIndice = handCartas.Count - 1;
+        float delay = 0;
+        for (int i = 0; i < cartas.Count; i++)
+        {
+            handCartas.Add(cartas[i]);
+        }
+        var novasPosicoes = calculaPosicoes();
+        var rotacao = this.RotationDegrees;
+        var tween = GetNode<Tween>("Tween");
+        for (int i = 0; i < handCartas.Count; i++)
+        {
+
+            tween.InterpolateProperty(handCartas[i], "translation", handCartas[i].Translation, novasPosicoes[i], 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut, delay);
+            tween.InterpolateProperty(handCartas[i], "rotation_degrees", handCartas[i].RotationDegrees, rotacao, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut, delay);
+            if (i >= lastIndice)
+            {
+                delay += 0.2f;
+            }
+        }
+        tween.Start();
+    }
+
     public void addCarta(CartaView carta)
     {
         handCartas.Add(carta);
         var novasPosicoes = calculaPosicoes();
+        var rotacao = this.RotationDegrees;
         var tween = GetNode<Tween>("Tween");
         for (int i = 0; i < handCartas.Count; i++)
         {
             tween.InterpolateProperty(handCartas[i], "translation", handCartas[i].Translation, novasPosicoes[i], 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
-            tween.InterpolateProperty(handCartas[i], "rotation_degrees", handCartas[i].RotationDegrees, Vector3.Zero, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
+            tween.InterpolateProperty(handCartas[i], "rotation_degrees", handCartas[i].RotationDegrees, rotacao, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
         }
         tween.Start();
     }
@@ -60,7 +87,12 @@ public class MaoView : Spatial
     }
     public override void _Ready()
     {
+        GetNode<MeshInstance>("seta").Visible = false;
+    }
 
+    private void _on_Tween_tween_all_completed()
+    {
+        GD.Print("completo");
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -67,6 +67,22 @@ public class BaralhoView : Spatial
         }
     }
 
+    public List<CartaView> comprarCartas(List<Carta> cartas)
+    {
+        List<CartaView> cards = new List<CartaView>();
+
+        for (int i = 0; i < cartas.Count; i++)
+        {
+            int ultima = baralhoCartas.Count - 1;
+            CartaView ultimaCarta = baralhoCartas[ultima];
+            ultimaCarta.Carta = cartas[i];
+            cards.Add(ultimaCarta);
+            baralhoCartas.Remove(ultimaCarta);
+        }
+
+        return cards;
+    }
+
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
     //  public override void _Process(float delta)
     //  {

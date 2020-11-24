@@ -33,4 +33,8 @@ export class Baralho {
       this.cartas[j] = aux;
     }
   }
+
+  comprarCarta(): Carta {
+    return this.cartas.pop()!;
+  }
 }

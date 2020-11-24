@@ -50,5 +50,14 @@ public class CartaView : Spatial
 
     }
 
+    private void _on_Area_mouse_entered()
+    {
+        GetNode<VisualInstance>("mesh").Layers = 3;
+    }
+
+    private void _on_Area_mouse_exited()
+    {
+        GetNode<VisualInstance>("mesh").Layers = 1;
+    }
 
 }
