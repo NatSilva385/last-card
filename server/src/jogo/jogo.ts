@@ -244,18 +244,23 @@ export class Jogo {
    * Joga uma carta para o jogador do turno atual caso ele seja controlado pelo computador
    */
   async jogadaComputador() {
+    /**primeiro checa se o jogador atual é um computador */
     if (
       this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
         .ControladoComputador
     ) {
+      /**espera para simular um jogador decidindo qual carta jogar */
+      let i = 0;
       await this.timeout(2000);
       let carta: Carta = new Carta();
+      /**se nenhuma carta tiver sido jogada o computador escolhe a primeira carta da sua mão */
       if (this.descarte.cartaNoTopo() == undefined) {
         carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
           .Mao[0];
       } else {
+        /**caso alguma carta tiver sido jogada ele escolhe a primeira carta que pode jogar */
         for (
-          let i = 0;
+          i = 0;
           i <
           this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.length;
           i++
@@ -271,24 +276,52 @@ export class Jogo {
           }
         }
       }
+
+      /**remove a carta da mão do computador e coloca no descarte */
+      this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.splice(
+        i,
+        1
+      );
+      this.descarte.adicionarCarta(carta);
+
+      /**transmite a jogada para os outros jogadores */
       console.log("PC jogou " + carta);
       this.io.to(this.sala.name).emit("jogada", carta);
     }
 
+    /**inicia a espera para finalizar as animações */
     this.comecaTurno = false;
     this.aguardaComecaTurno = false;
     this.jogada = false;
     this.aguardaJogada = true;
   }
 
-  /**Checa se a carta que será jogada pode ser usada
-   * @returns retorna se é possivel ou não jogar a carta
+  /**
+   * Checa se é possivel jogar uma determinada Carta
+   * @param carta a carta que será jogada
+   * @param jogadorId o id do jogador que está tentando realizar a jogada
    */
   podeJogarCarta(carta: Carta, jogadorId: number): boolean {
     /**checa para ver ser o jogador que está tentando jogar é o atual */
     if (jogadorId != this.turnoAtual) {
       return false;
     }
+
+    /**checa se a carta existe na mao do jogador */
+    let achou = false;
+    for (let i = 0; i < this.sala.jogadores[jogadorId].Mao.length; i++) {
+      if (
+        this.sala.jogadores[jogadorId].Mao[i].Cor == carta.Cor &&
+        this.sala.jogadores[jogadorId].Mao[i].Valor == carta.Valor
+      ) {
+        achou = true;
+        break;
+      }
+    }
+    if (!achou) {
+      return false;
+    }
+
     /**checa se existe alguma carta no descarta */
     if (this.descarte.cartaNoTopo() == undefined) {
       return true;
@@ -300,6 +333,45 @@ export class Jogo {
       }
     }
     return false;
+  }
+
+  /**
+   * Joga uma carta, adicionando ela a mao de um jogador e notificando os outros da jogada
+   * @param carta a carta que será jogada
+   * @param jogadorId o id do jogador que está jogando a carta
+   */
+  jogaCarta(carta: Carta, jogadorId: number) {
+    /**checa se é possivel jogar a carta */
+    if (!this.podeJogarCarta(carta, jogadorId)) {
+      return;
+    }
+
+    /**localiza a carta na mão do jogador */
+    let i = 0;
+    for (i = 0; i < this.sala.jogadores[jogadorId].Mao.length; i++) {
+      if (
+        this.sala.jogadores[jogadorId].Mao[i].Cor == carta.Cor &&
+        this.sala.jogadores[jogadorId].Mao[i].Valor == carta.Valor
+      ) {
+        break;
+      }
+    }
+
+    /**remove a carta da mão do jogador e a adiciona no descarte */
+    this.sala.jogadores[jogadorId].Mao.splice(i, 1);
+    console.log(this.sala.jogadores[jogadorId].Mao);
+    this.descarte.adicionarCarta(carta);
+
+    /**notifica para os outros jogadores da jogada realizada */
+    this.sala.jogadores[jogadorId]
+      .Socket!.to(this.sala.name)
+      .emit("jogada", carta);
+
+    /**inicia a espera para finalizar as animações */
+    this.comecaTurno = false;
+    this.aguardaComecaTurno = false;
+    this.jogada = false;
+    this.aguardaJogada = true;
   }
 
   /**

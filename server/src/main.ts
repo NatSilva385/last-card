@@ -120,7 +120,11 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("jogada", (msg: Jogada, ack) => {
-    ack(salas[msg.sala].jogo!.podeJogarCarta(msg.carta, msg.jogadorId));
+    let joga = salas[msg.sala].jogo!.podeJogarCarta(msg.carta, msg.jogadorId);
+    ack(joga);
+    if (joga) {
+      salas[msg.sala].jogo!.podeJogarCarta(msg.carta, msg.jogadorId);
+    }
   });
 
   socket.on("disconnect", (msg) => {
