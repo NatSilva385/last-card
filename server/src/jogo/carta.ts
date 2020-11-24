@@ -24,6 +24,12 @@ export class Carta {
     if (carta.Cor == this.Cor || carta.Valor == this.Valor) {
       return true;
     }
+    if (
+      this.Valor == VALOR.CORINGA ||
+      this.Valor == VALOR.CORINGA_MAIS_QUATRO
+    ) {
+      return true;
+    }
     return false;
   }
 }
