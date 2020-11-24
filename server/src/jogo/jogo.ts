@@ -308,6 +308,7 @@ export class Jogo {
    * @param jogadorId o id do jogador que está tentando realizar a jogada
    */
   podeJogarCarta(carta: Carta, jogadorId: number): boolean {
+    console.log(carta);
     /**checa para ver ser o jogador que está tentando jogar é o atual */
     if (jogadorId != this.turnoAtual) {
       return false;
