@@ -42,6 +42,7 @@ public class JogoView : Spatial
     {
         Client.On("pronto-comecar", response =>
         {
+            GD.Print("Pronto começar");
             var cartas = response.GetValue<CartaRecebida[]>();
             List<Carta> listaDeCartas = new List<Carta>();
             foreach (var carta in cartas)
@@ -170,6 +171,7 @@ public class JogoView : Spatial
 
         Client.On("comecar-turno", response =>
         {
+            GD.Print("Comecar turno");
             ComecoTurno dados = response.GetValue<ComecoTurno>();
             if (dados.jogadorId == jogadorPosicao)
             {

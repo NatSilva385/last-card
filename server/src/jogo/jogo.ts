@@ -159,7 +159,6 @@ export class Jogo {
    * e sinalizando que pode começar
    */
   comecarTurno() {
-    console.log("funcao comecar turno");
     this.comecaTurno = false;
     this.aguardaComecaTurno = true;
     this.jogada = false;
@@ -168,6 +167,7 @@ export class Jogo {
     if (this.turnoAtual > this.ordemJogadas.length - 1) {
       this.turnoAtual = 0;
     }
+    console.log("funcao começaar turno, id= " + this.turnoAtual);
     let podeJogarCarta = false;
     let turno: ComecoTurno = {
       jogadorId: this.turnoAtual,
@@ -293,14 +293,13 @@ export class Jogo {
       /**transmite a jogada para os outros jogadores */
       console.log("PC jogou " + carta);
       this.io.to(this.sala.name).emit("jogada", jogada);
+      /**inicia a espera para finalizar as animações */
+      this.aguardando = false;
+      this.comecaTurno = false;
+      this.aguardaComecaTurno = false;
+      this.jogada = false;
+      this.aguardaJogada = true;
     }
-
-    /**inicia a espera para finalizar as animações */
-    this.aguardando = false;
-    this.comecaTurno = false;
-    this.aguardaComecaTurno = false;
-    this.jogada = false;
-    this.aguardaJogada = true;
   }
 
   /**
@@ -334,7 +333,9 @@ export class Jogo {
       return true;
     }
     /**checa se é possivel jogar a carta selecionada */
-    if (this.sala.jogadores[jogadorId].possuiCarta(carta)) {
+    if (
+      this.sala.jogadores[this.ordemJogadas[jogadorId].id].possuiCarta(carta)
+    ) {
       if (carta.podeJogar(this.descarte.cartaNoTopo()!)) {
         return true;
       }
@@ -355,18 +356,24 @@ export class Jogo {
 
     /**localiza a carta na mão do jogador */
     let i = 0;
-    for (i = 0; i < this.sala.jogadores[jogadorId].Mao.length; i++) {
+    for (
+      i = 0;
+      i < this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao.length;
+      i++
+    ) {
       if (
-        this.sala.jogadores[jogadorId].Mao[i].Cor == carta.Cor &&
-        this.sala.jogadores[jogadorId].Mao[i].Valor == carta.Valor
+        this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao[i].Cor ==
+          carta.Cor &&
+        this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao[i].Valor ==
+          carta.Valor
       ) {
         break;
       }
     }
 
     /**remove a carta da mão do jogador e a adiciona no descarte */
-    this.sala.jogadores[jogadorId].Mao.splice(i, 1);
-    console.log(this.sala.jogadores[jogadorId].Mao);
+    this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao.splice(i, 1);
+    console.log(this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao);
     this.descarte.adicionarCarta(carta);
 
     let jogada: Jogada = {
@@ -376,7 +383,7 @@ export class Jogo {
     };
 
     /**notifica para os outros jogadores da jogada realizada */
-    this.sala.jogadores[jogadorId]
+    this.sala.jogadores[this.ordemJogadas[jogadorId].id]
       .Socket!.to(this.sala.name)
       .emit("jogada", jogada);
 

@@ -119,13 +119,15 @@ io.on("connection", (socket: Socket) => {
     });
   });
 
-  socket.on("jogada", (msg: Jogada, ack) => {
+  socket.on("jogada", (msg, ack) => {
     let carta: Carta = new Carta();
-    carta.Cor = msg.carta.Cor;
-    carta.Valor = msg.carta.Valor;
+    carta.Cor = msg.carta._cor;
+    carta.Valor = msg.carta._valor;
+    console.log(msg);
     let joga = salas[msg.sala].jogo!.podeJogarCarta(carta, msg.jogadorId);
     ack(joga);
     if (joga) {
+      console.log("Carta jogada");
       salas[msg.sala].jogo!.podeJogarCarta(carta, msg.jogadorId);
     }
   });
