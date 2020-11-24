@@ -25,7 +25,7 @@ public class DescarteView : Spatial
 
     public void addCarta(CartaView carta)
     {
-
+        GD.Print("Carta Descartada");
         var posIni = this.Translation;
 
         var r = new RandomNumberGenerator();

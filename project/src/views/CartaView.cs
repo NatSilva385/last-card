@@ -81,7 +81,13 @@ public class CartaView : Spatial
             if (e.ButtonMask == (int)ButtonList.Left)
             {
                 if (Jogo.TurnoDoJogador)
-                    Jogo.jogarCarta(this);
+                {
+                    if (Jogo.PodeJogar)
+                    {
+                        Jogo.jogarCarta(this);
+                    }
+                }
+
             }
         }
     }

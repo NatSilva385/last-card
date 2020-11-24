@@ -34,7 +34,7 @@ public class BaralhoView : Spatial
                         carta.Rotate(Vector3.Right, Mathf.Pi / 2);
                         carta.Rotate(Vector3.Up, Mathf.Pi);
                         y = y + altura;
-
+                        carta.Jogo = Jogo;
                         baralhoCartas.Add(carta);
                         Jogo.AddChild(carta);
                     }

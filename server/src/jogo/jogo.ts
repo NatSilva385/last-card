@@ -165,7 +165,7 @@ export class Jogo {
     this.jogada = false;
     this.aguardaJogada = false;
     this.aguardando = false;
-    if (this.turnoAtual > this.ordemJogadas.length) {
+    if (this.turnoAtual > this.ordemJogadas.length - 1) {
       this.turnoAtual = 0;
     }
     let podeJogarCarta = false;
@@ -296,6 +296,7 @@ export class Jogo {
     }
 
     /**inicia a espera para finalizar as animações */
+    this.aguardando = false;
     this.comecaTurno = false;
     this.aguardaComecaTurno = false;
     this.jogada = false;
@@ -380,6 +381,7 @@ export class Jogo {
       .emit("jogada", jogada);
 
     /**inicia a espera para finalizar as animações */
+    this.aguardando = false;
     this.comecaTurno = false;
     this.aguardaComecaTurno = false;
     this.jogada = false;
@@ -426,7 +428,7 @@ export class Jogo {
             this.io.to(this.sala.name).emit("comecar-jogada", this.turnoAtual);
             this.jogadaComputador();
           } else if (this.aguardaJogada) {
-            console.log("comecar turno");
+            console.log("Encerrar turno");
             this.comecaTurno = false;
             this.aguardaComecaTurno = true;
             this.jogada = false;
