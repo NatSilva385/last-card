@@ -8,6 +8,8 @@ public class MaoView : Spatial
 
     public string ID { get; set; }
 
+    public bool TerminouAnimacao { get; set; }
+
     [Export]
     public float larguraCarta = 1.4f;
 
@@ -20,6 +22,7 @@ public class MaoView : Spatial
 
     public void addCartas(List<CartaView> cartas)
     {
+        TerminouAnimacao = false;
         int lastIndice = handCartas.Count - 1;
         float delay = 0;
         for (int i = 0; i < cartas.Count; i++)
@@ -92,7 +95,7 @@ public class MaoView : Spatial
 
     private void _on_Tween_tween_all_completed()
     {
-        GD.Print("completo");
+        TerminouAnimacao = true;
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

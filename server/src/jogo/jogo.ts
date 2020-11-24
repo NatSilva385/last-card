@@ -2,6 +2,7 @@ import { v4 } from "uuid";
 import { Sala } from "../main";
 import { Baralho } from "./baralho";
 import { Carta } from "./carta";
+import { Descarte } from "./descarte";
 import { Jogador } from "./jogador";
 
 export class Jogo {
@@ -14,6 +15,11 @@ export class Jogo {
   private esperandoCarregar = false;
   private turnoAtual = 0;
   private incrementoTurno = 1;
+  private descarte: Descarte;
+  private aguardando = false;
+  private comecaTurno = true;
+  private esperaJogada = false;
+
   private _destruir = false;
   public get Destruir() {
     return this._destruir;
@@ -30,6 +36,7 @@ export class Jogo {
     this.baralho.embaralhar();
     this.baralho.embaralhar();
     this.io = io;
+    this.descarte = new Descarte();
   }
 
   timeout(ms: number) {
@@ -146,18 +153,98 @@ export class Jogo {
   }
 
   comecarTurno() {
+    this.comecaTurno = true;
+    this.esperaJogada = false;
     if (this.turnoAtual > this.ordemJogadas.length) {
       this.turnoAtual = 0;
     }
-    for (
-      let i = 0;
-      i < this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.length;
-      i++
-    ) {}
+    let podeJogarCarta = false;
+    let turno: ComecoTurno = {
+      jogadorId: this.turnoAtual,
+      cartas: [],
+    };
+    if (this.descarte.cartaNoTopo() == undefined) {
+      podeJogarCarta = true;
+    } else {
+      for (
+        let i = 0;
+        i <
+        this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.length;
+        i++
+      ) {
+        let carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
+          .Mao[i];
+        if (carta.podeJogar(this.descarte.cartaNoTopo()!)) {
+          podeJogarCarta = true;
+        }
+      }
+    }
+
+    if (!podeJogarCarta) {
+      let carta = this.baralho.comprarCarta();
+      this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.push(
+        carta
+      );
+      turno.cartas.push(carta);
+    }
+
+    for (let i = 0; i < this.sala.jogadores.length; i++) {
+      this.sala.jogadores[i].Aguardando = true;
+    }
+
+    let turnoOutros: ComecoTurno = {
+      cartas: [],
+      jogadorId: this.turnoAtual,
+    };
+
+    turno.cartas.forEach((carta) => turnoOutros.cartas.push(carta));
+
+    this.io
+      .to(this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].SocketID)
+      .emit("comecar-turno", turno);
+    this.io
+      .to(this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].SocketID)
+      .broadcast.emit("comecar-turno", turnoOutros);
+  }
+
+  async aguardar() {
+    if (!this.aguardando) {
+      while (true) {
+        this.aguardando = false;
+        let carregando = false;
+        for (let i = 0; i < this.sala.jogadores.length; i++) {
+          if (!this.sala.jogadores[i].ControladoComputador) {
+            if (this.sala.jogadores[i].Aguardando) {
+              carregando = true;
+              break;
+            }
+          }
+        }
+        if (carregando) {
+          await this.timeout(100);
+        } else {
+          this.aguardando = false;
+          if (this.comecaTurno) {
+            this.comecaTurno = false;
+            this.esperaJogada = true;
+          } else {
+            this.comecaTurno = true;
+            this.esperaJogada = false;
+            this.comecarTurno();
+          }
+          break;
+        }
+      }
+    }
   }
 }
 
 interface JogadorOrdem {
   socketID: string;
   id: number;
+}
+
+interface ComecoTurno {
+  jogadorId: number;
+  cartas: Carta[];
 }

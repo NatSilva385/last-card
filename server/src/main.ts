@@ -107,6 +107,15 @@ io.on("connection", (socket: Socket) => {
     });
   });
 
+  socket.on("terminar-turno", (msg) => {
+    salas[msg].jogo!.aguardar();
+    salas[msg].jogadores.forEach((jogador) => {
+      if (jogador.SocketID == socket.id) {
+        jogador.Aguardando = false;
+      }
+    });
+  });
+
   socket.on("disconnect", (msg) => {
     console.log("usuario desconectou");
     console.log(socket.id);

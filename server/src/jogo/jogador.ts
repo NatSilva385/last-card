@@ -41,6 +41,14 @@ export class Jogador {
     this._mao = value;
   }
 
+  private _aguardando: boolean = false;
+  public get Aguardando(): boolean {
+    return this._aguardando;
+  }
+  public set Aguardando(value: boolean) {
+    this._aguardando = value;
+  }
+
   constructor(socketID: string, name: string) {
     this._socketID = socketID;
     this._name = name;

@@ -19,6 +19,13 @@ export class Carta {
       this.Cor = COR.SEMCOR;
     }
   }
+
+  podeJogar(carta: Carta): boolean {
+    if (carta.Cor == this.Cor || carta.Valor == this.Valor) {
+      return true;
+    }
+    return false;
+  }
 }
 export enum COR {
   SEMCOR,
