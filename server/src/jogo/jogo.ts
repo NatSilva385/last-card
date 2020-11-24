@@ -348,14 +348,14 @@ export class Jogo {
    * @param carta a carta que será jogada
    * @param jogadorId o id do jogador que está jogando a carta
    */
-  jogaCarta(carta: Carta | undefined, jogadorId: number) {
+  jogaCarta(carta: Carta | null, jogadorId: number) {
     /**checa se é possivel jogar a carta */
     /*if (!this.podeJogarCarta(carta, jogadorId)) {
       return;
     }
 
     /**localiza a carta na mão do jogador */
-    if (carta != undefined) {
+    if (carta != null) {
       let i = 0;
       for (
         i = 0;

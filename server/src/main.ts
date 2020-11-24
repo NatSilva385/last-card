@@ -121,10 +121,11 @@ io.on("connection", (socket: Socket) => {
 
   socket.on("jogada", (msg, ack) => {
     let joga = false;
-    let carta: Carta | undefined;
+    let carta: Carta | null;
 
     console.log(msg);
     if (msg.carta == null) {
+      carta = null;
       joga = true;
     } else {
       carta = new Carta();
@@ -187,7 +188,7 @@ server.listen(port, () => {
 });
 
 export interface Jogada {
-  carta: Carta | undefined;
+  carta: Carta | null;
   jogadorId: number;
   sala: string;
 }
