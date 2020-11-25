@@ -1,7 +1,7 @@
 import { v4 } from "uuid";
 import { Jogada, Sala } from "../main";
 import { Baralho } from "./baralho";
-import { Carta } from "./carta";
+import { Carta, COR, VALOR } from "./carta";
 import { Descarte } from "./descarte";
 import { Jogador } from "./jogador";
 
@@ -21,6 +21,8 @@ export class Jogo {
   private aguardaComecaTurno = false;
   private jogada = false;
   private aguardaJogada = false;
+  private aguardaEscolhaCor = false;
+  private temQueEscolher = false;
 
   private _destruir = false;
   public get Destruir() {
@@ -115,11 +117,8 @@ export class Jogo {
             this.sala.jogadores[i].Mao = maoInicial;
 
             if (!this.sala.jogadores[i].ControladoComputador) {
-              console.log(maoInicial);
-
               let tmp: string[] = [];
               this.ordemJogadas.forEach((value) => tmp.push(value.socketID));
-              console.log(tmp);
               this.io
                 .to(this.sala.jogadores[i].SocketID)
                 .emit("pronto-comecar", maoInicial, tmp);
@@ -163,11 +162,13 @@ export class Jogo {
     this.aguardaComecaTurno = true;
     this.jogada = false;
     this.aguardaJogada = false;
+    this.aguardaEscolhaCor = false;
     this.aguardando = false;
     if (this.turnoAtual > this.ordemJogadas.length - 1) {
       this.turnoAtual = 0;
+    } else if (this.turnoAtual < 0) {
+      this.turnoAtual = this.ordemJogadas.length - 1;
     }
-    console.log("funcao começaar turno, id= " + this.turnoAtual);
     let podeJogarCarta = false;
     let turno: ComecoTurno = {
       jogadorId: this.turnoAtual,
@@ -290,15 +291,104 @@ export class Jogo {
         jogadorId: this.turnoAtual,
       };
 
+      if (carta.Valor == VALOR.INVERTER) {
+        this.incrementoTurno *= -1;
+        console.log("jogada invertida");
+      } else if (carta.Valor == VALOR.BLOQUEAR) {
+        this.turnoAtual += this.incrementoTurno;
+        if (this.turnoAtual > this.ordemJogadas.length - 1) {
+          this.turnoAtual = 0;
+        } else if (this.turnoAtual < 0) {
+          this.turnoAtual = this.ordemJogadas.length - 1;
+        }
+      }
+
       /**transmite a jogada para os outros jogadores */
-      console.log("PC jogou " + carta);
       this.io.to(this.sala.name).emit("jogada", jogada);
-      /**inicia a espera para finalizar as animações */
+
+      /**checa se o computador jogou um coringa, caso tenha jogado, notifica que irá escolher uma cor */
+      if (
+        carta.Valor == VALOR.CORINGA ||
+        carta.Valor == VALOR.CORINGA_MAIS_QUATRO
+      ) {
+        console.log("o computador precisará escolher a cor");
+        console.log(carta.Valor);
+        console.log(carta.Cor);
+        this.temQueEscolher = true;
+        this.aguardando = false;
+        this.comecaTurno = false;
+        this.aguardaComecaTurno = false;
+        this.jogada = false;
+        this.aguardaEscolhaCor = true;
+        this.aguardaJogada = false;
+      } else {
+        this.aguardando = false;
+        this.comecaTurno = false;
+        this.aguardaComecaTurno = false;
+        this.jogada = false;
+        this.aguardaEscolhaCor = false;
+        this.aguardaJogada = true;
+      }
+    }
+  }
+
+  /**
+   * Checa se é a vez do computador de escolher qual cor será usada após jogar um coringa
+   */
+
+  async escolheCor() {
+    /**Para facilitar salva o jogador atual em uma variavel */
+    let jogadorAtual = this.sala.jogadores[
+      this.ordemJogadas[this.turnoAtual].id
+    ];
+    /**Primeiro checa se o jogador é um computador, caso seja ele realiza a jogada */
+    if (
+      this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
+        .ControladoComputador
+    ) {
+      /**simula o tempo necessario para escolher a cor */
+      await this.timeout(500);
+
+      /**armazena em um vetor quantas vezes cada cor aparece na mão do jogador */
+      let qtde: number[] = [0, 0, 0, 0, 0];
+      for (let i = 0; i < jogadorAtual.Mao.length; i++) {
+        qtde[jogadorAtual.Mao[i].Cor]++;
+      }
+
+      /**armazena em um indice qual é a cor que mais aparece na mão do jogador */
+      let maior: number = 0;
+      for (let i = 0; i < qtde.length; i++) {
+        if (qtde[i] > qtde[maior]) {
+          maior = i;
+        }
+      }
+
+      /**se não houver nenhuma carta na mão, escolhe a cor amarelo */
+      if (maior == COR.SEMCOR) {
+        maior = COR.AMARELO;
+      }
+
+      let carta = this.descarte.cartaNoTopo();
+      carta!.Cor = maior;
+
+      let jogada: Jogada = {
+        carta: carta!,
+        sala: this.sala.name,
+        jogadorId: this.turnoAtual,
+      };
+
+      console.log("O PC escolheu cor: " + carta!.Cor);
+
+      this.temQueEscolher = false;
+
       this.aguardando = false;
       this.comecaTurno = false;
       this.aguardaComecaTurno = false;
       this.jogada = false;
+      this.aguardaEscolhaCor = false;
       this.aguardaJogada = true;
+
+      this.io.to(this.sala.name).emit("escolhe-cor", jogada);
     }
   }
 
@@ -308,7 +398,6 @@ export class Jogo {
    * @param jogadorId o id do jogador que está tentando realizar a jogada
    */
   podeJogarCarta(carta: Carta, jogadorId: number): boolean {
-    console.log(carta);
     /**checa para ver ser o jogador que está tentando jogar é o atual */
     if (jogadorId != this.turnoAtual) {
       return false;
@@ -375,8 +464,14 @@ export class Jogo {
 
       /**remove a carta da mão do jogador e a adiciona no descarte */
       this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao.splice(i, 1);
-      console.log(this.sala.jogadores[this.ordemJogadas[jogadorId].id].Mao);
       this.descarte.adicionarCarta(carta);
+    }
+
+    /**se a carta for nula, cria uma carta em branco para enviar aos outros jogadores */
+    if (carta == null) {
+      carta = new Carta();
+      carta.Cor = COR.SEMCOR;
+      carta.Valor = VALOR.SEM_VALOR;
     }
 
     let jogada: Jogada = {
@@ -385,16 +480,96 @@ export class Jogo {
       sala: this.sala.name,
     };
 
+    if (carta.Valor == VALOR.INVERTER) {
+      this.incrementoTurno *= -1;
+      console.log("jogada invertida");
+    } else if (carta.Valor == VALOR.BLOQUEAR) {
+      this.turnoAtual += this.incrementoTurno;
+      if (this.turnoAtual > this.ordemJogadas.length - 1) {
+        this.turnoAtual = 0;
+      } else if (this.turnoAtual < 0) {
+        this.turnoAtual = this.ordemJogadas.length - 1;
+      }
+    }
+
+    this.aguardando = false;
+    this.comecaTurno = false;
+    this.aguardaComecaTurno = false;
+    this.jogada = false;
+    this.aguardaEscolhaCor = true;
+    this.aguardaJogada = false;
+
     /**notifica para os outros jogadores da jogada realizada */
     this.sala.jogadores[this.ordemJogadas[jogadorId].id]
       .Socket!.to(this.sala.name)
       .emit("jogada", jogada);
 
-    /**inicia a espera para finalizar as animações */
+    /**caso a carta jogada seja um coringa, espera que o jogador informe a cor jogada*/
+    if (
+      carta.Valor == VALOR.CORINGA ||
+      carta.Valor == VALOR.CORINGA_MAIS_QUATRO
+    ) {
+      this.aguardando = false;
+      this.comecaTurno = false;
+      this.aguardaComecaTurno = false;
+      this.jogada = false;
+      this.aguardaEscolhaCor = true;
+      this.aguardaJogada = false;
+    } else {
+      this.aguardando = false;
+      this.comecaTurno = false;
+      this.aguardaComecaTurno = false;
+      this.jogada = false;
+      this.aguardaEscolhaCor = false;
+      this.aguardaJogada = true;
+    }
+  }
+
+  /**
+   * Checa se a mudança de cor que o jogador pretende fazer é valida
+   * @param carta a carta que será jogada
+   * @param jogadorId o o numero da ordem do jogador que pretende realizar a jogada
+   */
+  podeTrocarCor(carta: Carta, jogadorId: number): boolean {
+    /**checa se é o turno do jogador que está solicitando a jogada */
+    if (jogadorId != this.turnoAtual) {
+      return false;
+    }
+
+    /**checa se existe uma carta no descarte e se é possivel mudar a cor dela */
+    if (
+      this.descarte.cartaNoTopo() == undefined ||
+      this.descarte.cartaNoTopo()!.Cor != COR.SEMCOR
+    ) {
+      return false;
+    }
+
+    /**checa se o jogador enviou uma cor valida para realizar a troca */
+    if (carta.Cor == COR.SEMCOR) {
+      return false;
+    }
+    return true;
+  }
+
+  trocarCor(cor: COR, jogadorId: number) {
+    var cartaNoTopo: Carta = this.descarte.cartaNoTopo()!;
+    cartaNoTopo.Cor = cor;
+
+    let jogada: Jogada = {
+      carta: cartaNoTopo,
+      jogadorId: jogadorId,
+      sala: this.sala.name,
+    };
+    this.sala.jogadores[this.ordemJogadas[jogadorId].id]
+      .Socket!.to(this.sala.name)
+      .emit("escolhe-cor", jogada);
+
+    console.log("O jogador escolheu a cor");
     this.aguardando = false;
     this.comecaTurno = false;
     this.aguardaComecaTurno = false;
     this.jogada = false;
+    this.aguardaEscolhaCor = false;
     this.aguardaJogada = true;
   }
 
@@ -403,7 +578,6 @@ export class Jogo {
    */
   async aguardar() {
     if (!this.aguardando) {
-      console.log("comecnado a aguardar");
       while (true) {
         this.aguardando = true;
         let carregando = false;
@@ -421,29 +595,29 @@ export class Jogo {
           this.sala.jogadores.forEach((jogador) => {
             jogador.Aguardando = true;
           });
-          console.log("aqui");
+          if (this.temQueEscolher) {
+            console.log("Terá que escolher");
+            this.escolheCor();
+            break;
+          }
           if (this.comecaTurno) {
-            console.log("comecar turno");
             this.comecaTurno = false;
-            this.aguardaComecaTurno = true;
-            this.jogada = false;
-            this.aguardaJogada = false;
             this.comecarTurno();
           } else if (this.aguardaComecaTurno) {
-            console.log("comecar a jogar");
-            this.comecaTurno = false;
             this.aguardaComecaTurno = false;
-            this.jogada = true;
-            this.aguardaJogada = false;
             this.io.to(this.sala.name).emit("comecar-jogada", this.turnoAtual);
             this.jogadaComputador();
+          } else if (this.aguardaEscolhaCor) {
+            console.log("aguardando a escolha de cor");
+            this.aguardaEscolhaCor = false;
           } else if (this.aguardaJogada) {
-            console.log("Encerrar turno");
-            this.comecaTurno = false;
-            this.aguardaComecaTurno = true;
-            this.jogada = false;
             this.aguardaJogada = false;
-            this.turnoAtual++;
+            this.turnoAtual += this.incrementoTurno;
+            if (this.turnoAtual > this.ordemJogadas.length - 1) {
+              this.turnoAtual = 0;
+            } else if (this.turnoAtual < 0) {
+              this.turnoAtual = this.ordemJogadas.length - 1;
+            }
             this.comecarTurno();
           }
           break;

@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://src/views/CorSelecaoView.cs" type="Script" id=1]
+[ext_resource path="res://assets/meshes/cor_selecao/cor_selecao_2.obj" type="ArrayMesh" id=2]
+
+[sub_resource type="SpatialMaterial" id=1]
+albedo_color = Color( 0, 1, 0, 1 )
+
+[sub_resource type="ConvexPolygonShape" id=2]
+points = PoolVector3Array( 0.091448, -0.47316, 1.34771, 0.091448, -0.47316, 0.101136, 0.091448, 1.47703, 1.34771, 0.091448, 1.47703, 0.101136, 1.34886, -0.47316, 1.34771, 0.091448, -0.47316, 1.34771, 1.34886, 1.47703, 1.34771, 0.091448, 1.47703, 1.34771, 1.34886, -0.47316, 0.101136, 1.34886, -0.47316, 1.34771, 1.34886, 1.47703, 0.101136, 1.34886, 1.47703, 1.34771, 0.091448, -0.47316, 0.101136, 1.34886, -0.47316, 0.101136, 0.091448, 1.47703, 0.101136, 1.34886, 1.47703, 0.101136, 0.091448, -0.47316, 0.101136, 0.091448, -0.47316, 1.34771, 1.34886, -0.47316, 0.101136, 1.34886, -0.47316, 1.34771, 1.34886, 1.47703, 0.101136, 1.34886, 1.47703, 1.34771, 0.091448, 1.47703, 0.101136, 0.091448, 1.47703, 1.34771 )
+
+[node name="cor_verde" type="Spatial"]
+script = ExtResource( 1 )
+
+[node name="cor_selecao_2" type="MeshInstance" parent="."]
+mesh = ExtResource( 2 )
+material/0 = SubResource( 1 )
+
+[node name="Area" type="Area" parent="."]
+
+[node name="CollisionShape" type="CollisionShape" parent="Area"]
+shape = SubResource( 2 )
+[connection signal="input_event" from="Area" to="." method="_on_Area_input_event"]
+[connection signal="mouse_entered" from="Area" to="." method="_on_Area_mouse_entered"]
+[connection signal="mouse_exited" from="Area" to="." method="_on_Area_mouse_exited"]

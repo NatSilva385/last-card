@@ -2,6 +2,7 @@ namespace project.src.models
 {
     public class Carta
     {
+
         public bool podeJogar(Carta carta)
         {
             if (carta.Cor == this.Cor || carta.Valor == this.Valor)
@@ -15,13 +16,17 @@ namespace project.src.models
             return false;
         }
 
-
+        private COR _cor;
         public COR Cor
         {
-            get;
-            set;
+            get { return _cor; }
+            set { _cor = value; }
         }
 
+        public void setCor(COR cor)
+        {
+            _cor = cor;
+        }
         private VALOR _valor;
         public VALOR Valor
         {

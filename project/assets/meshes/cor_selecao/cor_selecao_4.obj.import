@@ -1,0 +1,19 @@
+[remap]
+
+importer="wavefront_obj"
+type="Mesh"
+path="res://.import/cor_selecao_4.obj-2c92ba78c7f46a9262f7d2a9c237f32b.mesh"
+
+[deps]
+
+files=[ "res://.import/cor_selecao_4.obj-2c92ba78c7f46a9262f7d2a9c237f32b.mesh" ]
+
+source_file="res://assets/meshes/cor_selecao/cor_selecao_4.obj"
+dest_files=[ "res://.import/cor_selecao_4.obj-2c92ba78c7f46a9262f7d2a9c237f32b.mesh", "res://.import/cor_selecao_4.obj-2c92ba78c7f46a9262f7d2a9c237f32b.mesh" ]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3( 1, 1, 1 )
+offset_mesh=Vector3( 0, 0, 0 )
+optimize_mesh=true

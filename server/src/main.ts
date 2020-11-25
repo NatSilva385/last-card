@@ -111,6 +111,7 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("terminar-aguardar", (msg) => {
+    console.log("Terminou de aguardar");
     salas[msg].jogo!.aguardar();
     salas[msg].jogadores.forEach((jogador) => {
       if (jogador.SocketID == socket.id) {
@@ -122,8 +123,7 @@ io.on("connection", (socket: Socket) => {
   socket.on("jogada", (msg, ack) => {
     let joga = false;
     let carta: Carta | null;
-
-    console.log(msg);
+    let numJoga: number;
     if (msg.carta == null) {
       carta = null;
       joga = true;
@@ -133,10 +133,32 @@ io.on("connection", (socket: Socket) => {
       carta.Valor = msg.carta._valor;
       joga = salas[msg.sala].jogo!.podeJogarCarta(carta, msg.jogadorId);
     }
-    ack(joga);
     if (joga) {
-      console.log("Carta jogada");
+      numJoga = 1;
+    } else {
+      numJoga = 0;
+    }
+    ack(numJoga);
+    if (joga) {
       salas[msg.sala].jogo!.jogaCarta(carta, msg.jogadorId);
+    }
+  });
+
+  socket.on("escolhe-cor", (msg, ack) => {
+    let joga = false;
+    let numJoga = 0;
+    let carta = new Carta();
+    carta.Cor = msg.carta._cor;
+    carta.Valor = msg.carta._valor;
+    joga = salas[msg.sala].jogo!.podeTrocarCor(msg.carta, msg.jogadorId);
+    if (joga) {
+      numJoga = 1;
+    } else {
+      numJoga = 0;
+    }
+    ack(numJoga);
+    if (joga) {
+      salas[msg.sala].jogo!.trocarCor(msg.carta._cor, msg.jogadorId);
     }
   });
 

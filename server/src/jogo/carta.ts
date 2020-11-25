@@ -1,12 +1,12 @@
 export class Carta {
-  private _cor: COR = COR.SEMCOR;
+  private _cor: COR;
   public get Cor(): COR {
     return this._cor;
   }
   public set Cor(value: COR) {
     this._cor = value;
   }
-  private _valor: VALOR = VALOR.SEM_VALOR;
+  private _valor: VALOR;
   public get Valor(): VALOR {
     return this._valor;
   }
@@ -18,6 +18,10 @@ export class Carta {
     ) {
       this.Cor = COR.SEMCOR;
     }
+  }
+  constructor() {
+    this._cor = COR.SEMCOR;
+    this._valor = VALOR.SEM_VALOR;
   }
 
   podeJogar(carta: Carta): boolean {

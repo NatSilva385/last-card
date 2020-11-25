@@ -49,6 +49,10 @@ public class BaralhoView : Spatial
 
     }
 
+    public int tamanho()
+    {
+        return baralhoCartas.Count;
+    }
     private void _on_Area_input_event(object camera, object @event, Vector3 click_position, Vector3 click_normal, int shape_idx)
     {
         if (@event is InputEventMouse e)

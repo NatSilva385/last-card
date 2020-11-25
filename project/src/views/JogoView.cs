@@ -21,6 +21,10 @@ public class JogoView : Spatial
 
     public string NumeroSala { get; set; }
 
+    AreaMensagens areaMensagens;
+
+    Spatial corSelecao;
+
     Jogo jogo;
     public async override void _Ready()
     {
@@ -33,16 +37,21 @@ public class JogoView : Spatial
         descarte = GetNode<DescarteView>("Descarte");
         descarte.Jogo = this;
 
+        areaMensagens = GetNode<AreaMensagens>("AreaMensagens");
+
+        corSelecao = GetNode<Spatial>("cor_selecao");
+
         //adversario = GetNode<MaoView>("MaoJogador2");
         await Client.EmitAsync("terminou-carregar", NumeroSala);
         eventosClient();
+
     }
 
     public void eventosClient()
     {
         Client.On("pronto-comecar", response =>
         {
-            GD.Print("Pronto começar");
+
             var cartas = response.GetValue<CartaRecebida[]>();
             List<Carta> listaDeCartas = new List<Carta>();
             foreach (var carta in cartas)
@@ -74,7 +83,6 @@ public class JogoView : Spatial
                     mao2.ID = ordem[1];
                     mao2.Jogo = this;
                     ordemJogada.Add(mao2);
-                    GD.Print("Você joga primeiro");
                 }
                 else
                 {
@@ -84,7 +92,6 @@ public class JogoView : Spatial
                     ordemJogada.Add(mao2);
                     ordemJogada.Add(mao);
                     jogadorPosicao = 1;
-                    GD.Print("Você joga segundo");
                 }
             }
             else
@@ -166,16 +173,17 @@ public class JogoView : Spatial
                     jogador.addCartas(baralho.comprarCartas(listaDeCartas));
                 }
             }
+            areaMensagens.mostraMensage("Começar");
             aguardarAnimacaoCompra();
         });
 
         Client.On("comecar-turno", response =>
         {
-            GD.Print("Comecar turno");
+            GD.Print(baralho.tamanho());
             ComecoTurno dados = response.GetValue<ComecoTurno>();
             if (dados.jogadorId == jogadorPosicao)
             {
-                GD.Print("Seu Turno");
+                areaMensagens.mostraMensage("Seu Turno");
                 TurnoDoJogador = true;
             }
             if (dados.cartas.Length > 0)
@@ -197,7 +205,6 @@ public class JogoView : Spatial
 
         Client.On("comecar-jogada", async response =>
          {
-             GD.Print("Comeca jogada " + response.ToString());
              var carta = descarte.ultimaCarta();
              if (carta == null)
              {
@@ -211,28 +218,58 @@ public class JogoView : Spatial
                  }
                  else
                  {
+                     areaMensagens.mostraMensage("Sem Cartas para jogar");
                      PodeJogar = false;
                      await Task.Delay(500);
                      Jogada jogada = new Jogada();
                      jogada.carta = null;
+
                      jogada.sala = NumeroSala;
                      jogada.jogadorId = jogadorPosicao;
-                     await Client.EmitAsync("jogada", ack=>{}, jogada);
+                     await Client.EmitAsync("jogada", ack =>
+                     {
+                         terminouAnimacaoJogada();
+                     }, jogada);
                  }
              }
          });
 
-        Client.On("jogada", response =>
+        Client.On("jogada", async response =>
+       {
+           var jogada = response.GetValue<Jogada>();
+           Carta carta = new Carta();
+           carta.Cor = (COR)jogada.carta._cor;
+           carta.Valor = (VALOR)jogada.carta._valor;
+           if (carta.Valor == VALOR.SEM_VALOR)
+           {
+               GD.Print("O Computador vai escolher a cor da carta");
+               await Task.Delay(100);
+               await Client.EmitAsync("terminar-aguardar", NumeroSala);
+           }
+           else
+
+           {
+
+               ordemJogada[jogada.jogadorId].removeCarta(carta);
+               aguardarAnimacaoCompra();
+           }
+
+           //aguardarAnimacaoCompra();
+       });
+
+        Client.On("escolhe-cor", response =>
         {
-            GD.Print(response.ToString());
             var jogada = response.GetValue<Jogada>();
-            Carta carta = new Carta();
+            project.src.models.Carta carta = new project.src.models.Carta();
             carta.Cor = (COR)jogada.carta._cor;
             carta.Valor = (VALOR)jogada.carta._valor;
-            ordemJogada[jogada.jogadorId].removeCarta(carta);
+            carta.setCor((COR)jogada.carta._cor);
+
+            descarte.ultimaCartaView().Carta = carta;
+            descarte.ultimaCartaView().Carta = carta;
+
             aguardarAnimacaoCompra();
         });
-
     }
 
     public void init()
@@ -256,7 +293,6 @@ public class JogoView : Spatial
             if (completo)
             {
                 await Client.EmitAsync("terminar-aguardar", NumeroSala);
-                GD.Print("Compra completa");
                 break;
             }
             else
@@ -269,7 +305,6 @@ public class JogoView : Spatial
     public async void terminouAnimacaoJogada()
     {
         await Client.EmitAsync("terminar-aguardar", NumeroSala);
-        GD.Print("Jogada Completa");
     }
     public void comprarCarta(CartaView carta)
     {
@@ -290,33 +325,62 @@ public class JogoView : Spatial
         jogada.carta = c;
         jogada.jogadorId = jogadorPosicao;
         jogada.sala = NumeroSala;
-        bool resp = false;
         await Client.EmitAsync("jogada", response =>
         {
-            if(response.GetValue<string>()=="True")
+            int x = response.GetValue<int>();
+            if (x == 1)
             {
-                resp = true;
+                ordemJogada[jogadorPosicao].removeCarta(carta.Carta);
+                aguardarAnimacaoCompra();
+                if (carta.Carta.Valor == VALOR.CORINGA || carta.Carta.Valor == VALOR.CORINGA_MAIS_QUATRO)
+                {
+                    corSelecao.Visible = true;
+                    PodeJogar = false;
+                }
+            }
+            else
+            {
+                PodeJogar = true;
             }
         }, jogada);
-        GD.Print(resp);
-        if (resp)
-        {
-            ordemJogada[jogadorPosicao].removeCarta(carta.Carta);
-            aguardarAnimacaoCompra();
-        }
-        else
-        {
-            PodeJogar = true;
-        }
-        //descarte.addCarta(carta);
+
     }
 
     public void animarCarta(CartaView carta)
     {
-        GD.Print("Tenta descartar carta");
         descarte.addCarta(carta);
     }
 
+
+    public async void escolherCor(COR cor)
+    {
+        carta c = new carta();
+        c._cor = (int)cor;
+        c._valor = (int)descarte.ultimaCarta().Valor;
+        Jogada jogada = new Jogada();
+        project.src.models.Carta au = new project.src.models.Carta();
+        au.Cor = cor;
+        au.Valor = descarte.ultimaCarta().Valor;
+        jogada.carta = c;
+        jogada.jogadorId = jogadorPosicao;
+        jogada.sala = NumeroSala;
+        au.setCor(cor);
+
+        areaMensagens.mostraMensage("Cor escolhida: " + cor);
+        await Client.EmitAsync("escolhe-cor", response =>
+        {
+
+            int resp = response.GetValue<int>();
+
+            if (resp == 1)
+            {
+                descarte.ultimaCartaView().Carta = au;
+                corSelecao.Visible = false;
+                aguardarAnimacaoCompra();
+
+            }
+        }, jogada);
+    }
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
     //  public override void _Process(float delta)
     //  {

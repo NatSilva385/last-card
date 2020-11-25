@@ -24,6 +24,10 @@ export class Baralho {
     }
   }
 
+  tamanho(): number {
+    return this.cartas.length;
+  }
+
   embaralhar() {
     for (let i = 0; i < this.cartas.length; i++) {
       const j = Math.floor(Math.random() * (i + 1));

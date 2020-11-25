@@ -34,6 +34,17 @@ public class DescarteView : Spatial
         CartaView carta = cartasDescartadas[ultimoIndice];
         return carta.Carta;
     }
+
+    public CartaView ultimaCartaView()
+    {
+        if (cartasDescartadas.Count == 0)
+        {
+            return null;
+        }
+        int ultimoIndice = cartasDescartadas.Count - 1;
+        CartaView carta = cartasDescartadas[ultimoIndice];
+        return carta;
+    }
     public void addCarta(CartaView carta)
     {
         GD.Print("Carta Descartada");
@@ -50,6 +61,8 @@ public class DescarteView : Spatial
         tween.Start();
         cartasDescartadas.Add(carta);
     }
+
+
 
     private void _on_Tween_tween_all_completed()
     {

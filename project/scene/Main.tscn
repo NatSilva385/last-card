@@ -1,10 +1,13 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://scene/Baralho.tscn" type="PackedScene" id=1]
 [ext_resource path="res://src/views/JogoView.cs" type="Script" id=2]
 [ext_resource path="res://scene/Cenario.tscn" type="PackedScene" id=3]
 [ext_resource path="res://scene/Mao.tscn" type="PackedScene" id=4]
 [ext_resource path="res://scene/Descarte.tscn" type="PackedScene" id=5]
+[ext_resource path="res://assets/fonts/Rokkitt-Bold.tres" type="DynamicFont" id=6]
+[ext_resource path="res://src/forms/AreaMensagens.cs" type="Script" id=7]
+[ext_resource path="res://scene/cor_selecao/cor_selecao.tscn" type="PackedScene" id=8]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -87,3 +90,40 @@ current = true
 
 [node name="Descarte" parent="." instance=ExtResource( 5 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.173622, 1.0469, 0.0671415 )
+
+[node name="AreaMensagens" type="Control" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 7 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="AreaMensagens"]
+anchor_right = 1.0
+margin_bottom = 32.0
+custom_constants/margin_top = 70
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CenterContainer" type="CenterContainer" parent="AreaMensagens/MarginContainer"]
+margin_top = 70.0
+margin_right = 1024.0
+margin_bottom = 102.0
+
+[node name="lblMensagem" type="Label" parent="AreaMensagens/MarginContainer/CenterContainer" groups=[
+"mensagem",
+]]
+margin_left = 410.0
+margin_right = 613.0
+margin_bottom = 32.0
+custom_fonts/font = ExtResource( 6 )
+custom_colors/font_color_shadow = Color( 0, 0, 0, 1 )
+text = "Mensagem Teste"
+align = 1
+
+[node name="cor_selecao" parent="." instance=ExtResource( 8 )]
+transform = Transform( 1, 0, 0, 0, 0.906691, -0.421796, 0, 0.421796, 0.906691, 0, 0.365634, -0.486612 )
+visible = false
