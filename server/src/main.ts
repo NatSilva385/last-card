@@ -111,7 +111,6 @@ io.on("connection", (socket: Socket) => {
   });
 
   socket.on("terminar-aguardar", (msg) => {
-    console.log("Terminou de aguardar");
     salas[msg].jogo!.aguardar();
     salas[msg].jogadores.forEach((jogador) => {
       if (jogador.SocketID == socket.id) {

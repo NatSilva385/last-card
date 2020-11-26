@@ -184,19 +184,37 @@ export class Jogo {
       if (this.temQueComprar) {
         /**checa se o jogador tem na mão alguma carta que o impedirá de comprar */
         let impede = false;
+        let ultimaCarta = this.descarte.cartaNoTopo();
+
         for (
           let x = 0;
           x <
           this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.length;
           x++
         ) {
-          if (
-            this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
-              .Valor == VALOR.MAIS_DOIS ||
-            this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
-              .Valor == VALOR.CORINGA_MAIS_QUATRO
-          ) {
-            impede = true;
+          if (ultimaCarta!.Valor == VALOR.CORINGA_MAIS_QUATRO) {
+            if (
+              this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
+                .Cor == ultimaCarta!.Cor &&
+              this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
+                .Valor == VALOR.MAIS_DOIS
+            ) {
+              impede = true;
+            } else if (
+              this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
+                .Valor == VALOR.CORINGA_MAIS_QUATRO
+            ) {
+              impede = true;
+            }
+          } else {
+            if (
+              this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
+                .Valor == VALOR.MAIS_DOIS ||
+              this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
+                .Valor == VALOR.CORINGA_MAIS_QUATRO
+            ) {
+              impede = true;
+            }
           }
         }
         /**se o jogador não tem nenhuma carta na mão para impedir a compra, ele compra novas cartas */
@@ -298,22 +316,32 @@ export class Jogo {
         if (this.temQueComprar) {
           let impede = false;
           let pos = 0;
-          for (
-            let x = 0;
-            x <
-            this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao
-              .length;
-            x++
-          ) {
-            if (
-              this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
-                .Valor == VALOR.MAIS_DOIS ||
-              this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
-                .Valor == VALOR.CORINGA_MAIS_QUATRO
-            ) {
-              carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
-                .Mao[x];
-              break;
+          let ultimaCarta = this.descarte.cartaNoTopo();
+          let jogadorAtual = this.sala.jogadores[
+            this.ordemJogadas[this.turnoAtual].id
+          ];
+          for (let x = 0; x < jogadorAtual.Mao.length; x++) {
+            if (ultimaCarta?.Valor == VALOR.CORINGA_MAIS_QUATRO) {
+              if (
+                jogadorAtual.Mao[x].Valor == VALOR.MAIS_DOIS &&
+                jogadorAtual.Mao[x].Cor == ultimaCarta.Cor
+              ) {
+                carta = jogadorAtual.Mao[x];
+                break;
+              } else if (
+                jogadorAtual.Mao[x].Valor == VALOR.CORINGA_MAIS_QUATRO
+              ) {
+                carta = jogadorAtual.Mao[x];
+                break;
+              }
+            } else {
+              if (
+                jogadorAtual.Mao[x].Valor == VALOR.MAIS_DOIS ||
+                jogadorAtual.Mao[x].Valor == VALOR.CORINGA_MAIS_QUATRO
+              ) {
+                carta = jogadorAtual.Mao[x];
+                break;
+              }
             }
           }
         } else {
@@ -493,6 +521,12 @@ export class Jogo {
       this.sala.jogadores[this.ordemJogadas[jogadorId].id].possuiCarta(carta)
     ) {
       if (this.temQueComprar) {
+        let ultimaCarta = this.descarte.cartaNoTopo();
+        if (ultimaCarta?.Valor == VALOR.CORINGA_MAIS_QUATRO) {
+          if (carta.Valor == VALOR.MAIS_DOIS && carta.Cor == ultimaCarta.Cor) {
+            return true;
+          }
+        }
         if (
           carta.Valor != VALOR.MAIS_DOIS &&
           carta.Valor != VALOR.CORINGA_MAIS_QUATRO
