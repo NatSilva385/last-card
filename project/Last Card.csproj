@@ -4,8 +4,14 @@
     <RootNamespace>LastCard</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="SocketIOClient" Version="2.1.1" />
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
-    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+    <PackageReference Include="SocketIOClient">
+      <Version>2.1.1</Version>
+    </PackageReference>
+    <PackageReference Include="System.Net.Http">
+      <Version>4.3.4</Version>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json">
+      <Version>4.7.2</Version>
+    </PackageReference>
   </ItemGroup>
 </Project>

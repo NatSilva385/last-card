@@ -23,6 +23,8 @@ export class Jogo {
   private aguardaJogada = false;
   private aguardaEscolhaCor = false;
   private temQueEscolher = false;
+  private temQueComprar = false;
+  private qtdeCartasComprar = 0;
 
   private _destruir = false;
   public get Destruir() {
@@ -178,6 +180,36 @@ export class Jogo {
     if (this.descarte.cartaNoTopo() == undefined) {
       podeJogarCarta = true;
     } else {
+      /**checa se precisa comprar alguma carta */
+      if (this.temQueComprar) {
+        /**checa se o jogador tem na mão alguma carta que o impedirá de comprar */
+        let impede = false;
+        for (
+          let x = 0;
+          x <
+          this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.length;
+          x++
+        ) {
+          if (
+            this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
+              .Valor == VALOR.MAIS_DOIS
+          ) {
+            impede = true;
+          }
+        }
+        /**se o jogador não tem nenhuma carta na mão para impedir a compra, ele compra novas cartas */
+        if (!impede) {
+          for (let x = 0; x < this.qtdeCartasComprar; x++) {
+            let carta = this.baralho.comprarCarta();
+            this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.push(
+              carta
+            );
+            turno.cartas.push(carta);
+            this.temQueComprar = false;
+          }
+          this.qtdeCartasComprar = 0;
+        }
+      }
       /**caso já tenha sido jogada alguma carta, checa se o jogador atual precisa comprar uma nova carta */
       for (
         let i = 0;
@@ -259,21 +291,45 @@ export class Jogo {
         carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
           .Mao[0];
       } else {
-        /**caso alguma carta tiver sido jogada ele escolhe a primeira carta que pode jogar */
-        for (
-          i = 0;
-          i <
-          this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.length;
-          i++
-        ) {
-          if (
-            this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[
-              i
-            ].podeJogar(this.descarte.cartaNoTopo()!)
+        /**se ele tiver que comprar carta, checa se ele tem alguma carta para jogar */
+
+        if (this.temQueComprar) {
+          let impede = false;
+          let pos = 0;
+          for (
+            let x = 0;
+            x <
+            this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao
+              .length;
+            x++
           ) {
-            carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
-              .Mao[i];
-            break;
+            if (
+              this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
+                .Valor == VALOR.MAIS_DOIS
+            ) {
+              carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
+                .Mao[x];
+              break;
+            }
+          }
+        } else {
+          /**caso alguma carta tiver sido jogada ele escolhe a primeira carta que pode jogar */
+          for (
+            i = 0;
+            i <
+            this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao
+              .length;
+            i++
+          ) {
+            if (
+              this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[
+                i
+              ].podeJogar(this.descarte.cartaNoTopo()!)
+            ) {
+              carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
+                .Mao[i];
+              break;
+            }
           }
         }
       }
@@ -301,6 +357,9 @@ export class Jogo {
         } else if (this.turnoAtual < 0) {
           this.turnoAtual = this.ordemJogadas.length - 1;
         }
+      } else if (carta.Valor == VALOR.MAIS_DOIS) {
+        this.temQueComprar = true;
+        this.qtdeCartasComprar += 2;
       }
 
       /**transmite a jogada para os outros jogadores */
@@ -426,6 +485,11 @@ export class Jogo {
     if (
       this.sala.jogadores[this.ordemJogadas[jogadorId].id].possuiCarta(carta)
     ) {
+      if (this.temQueComprar) {
+        if (carta.Valor != VALOR.MAIS_DOIS) {
+          return false;
+        }
+      }
       if (carta.podeJogar(this.descarte.cartaNoTopo()!)) {
         return true;
       }
@@ -490,6 +554,9 @@ export class Jogo {
       } else if (this.turnoAtual < 0) {
         this.turnoAtual = this.ordemJogadas.length - 1;
       }
+    } else if (carta.Valor == VALOR.MAIS_DOIS) {
+      this.temQueComprar = true;
+      this.qtdeCartasComprar += 2;
     }
 
     this.aguardando = false;
