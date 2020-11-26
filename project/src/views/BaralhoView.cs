@@ -87,6 +87,12 @@ public class BaralhoView : Spatial
         return cards;
     }
 
+    public void addCarta(CartaView carta)
+    {
+        carta.Carta = new project.src.models.Carta();
+        baralhoCartas.Add(carta);
+    }
+
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
     //  public override void _Process(float delta)
     //  {

@@ -68,12 +68,6 @@ io.on("connection", (socket: Socket) => {
       if (salasOcupadas[i].maxNumUsers > salasOcupadas[i].qtdeUser) {
         if (salasOcupadas[i].maxNumUsers == msg.QtdeJogadores) {
           salaEscolhida = salasOcupadas[i].name;
-          salasOcupadas[i].jogadores.push(
-            new Jogador(socket.id, msg.NomeJogador)
-          );
-          salasOcupadas[i].jogadores![i].ControladoComputador = false;
-          salasOcupadas[i].jogadores![i].Socket = socket;
-          salasOcupadas[i].qtdeUser++;
         }
       }
     }
@@ -93,8 +87,16 @@ io.on("connection", (socket: Socket) => {
       );
       salas[salaEscolhida].jogadores[x - 1].ControladoComputador = false;
       salas[salaEscolhida].jogadores[x - 1].Socket = socket;
+    } else {
+      let x = salas[salaEscolhida].jogadores.push(
+        new Jogador(socket.id, msg.NomeJogador)
+      );
+      salas[salaEscolhida].jogadores[x - 1].ControladoComputador = false;
+      salas[salaEscolhida].jogadores[x - 1].Socket = socket;
+      salas[salaEscolhida].qtdeUser++;
     }
 
+    console.log(`Adicionou o usuario ${socket.id} a sala ${salaEscolhida}`);
     socket.join(salaEscolhida);
     salas[salaEscolhida].name = salaEscolhida;
     salas[salaEscolhida].jogo!.esperaJogadores();
@@ -115,6 +117,17 @@ io.on("connection", (socket: Socket) => {
     salas[msg].jogadores.forEach((jogador) => {
       if (jogador.SocketID == socket.id) {
         jogador.Aguardando = false;
+      }
+    });
+  });
+
+  socket.on("mover-descarte-baralho", (msg) => {
+    console.log(
+      "o servidor está aguardando mover as cartas do descarte para o baralho"
+    );
+    salas[msg].jogadores.forEach((jogador) => {
+      if (jogador.SocketID == socket.id) {
+        jogador.AguardaNovoBaralho = false;
       }
     });
   });

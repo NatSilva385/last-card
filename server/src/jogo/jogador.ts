@@ -57,6 +57,15 @@ export class Jogador {
   public set Socket(value: Socket | undefined) {
     this._socket = value;
   }
+
+  private _aguardaNovoBaralho: boolean = false;
+  public get AguardaNovoBaralho(): boolean {
+    return this._aguardaNovoBaralho;
+  }
+  public set AguardaNovoBaralho(value: boolean) {
+    this._aguardaNovoBaralho = value;
+  }
+
   constructor(socketID: string, name: string) {
     this._socketID = socketID;
     this._name = name;

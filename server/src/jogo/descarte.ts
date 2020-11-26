@@ -24,4 +24,15 @@ export class Descarte {
     }
     return ultima;
   }
+
+  removeTodasCartasMenosUltima(): Carta[] {
+    let ultimaCarta = this._descarte.pop();
+    let cartas: Carta[] = [];
+    let tamanho = this._descarte.length;
+    for (let i = 0; i < tamanho; i++) {
+      cartas.push(this._descarte.pop()!);
+    }
+    this._descarte.push(ultimaCarta!);
+    return cartas;
+  }
 }

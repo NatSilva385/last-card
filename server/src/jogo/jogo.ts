@@ -37,12 +37,12 @@ export class Jogo {
   private ordemJogadas: JogadorOrdem[] = [];
 
   constructor(sala: Sala, io: any) {
-    this.baralho = new Baralho();
+    this.descarte = new Descarte();
+    this.baralho = new Baralho(this.descarte, io, sala.name, sala.jogadores);
     this.sala = sala;
     this.baralho.embaralhar();
     this.baralho.embaralhar();
     this.io = io;
-    this.descarte = new Descarte();
   }
 
   timeout(ms: number) {
@@ -121,6 +121,8 @@ export class Jogo {
             if (!this.sala.jogadores[i].ControladoComputador) {
               let tmp: string[] = [];
               this.ordemJogadas.forEach((value) => tmp.push(value.socketID));
+              console.log(this.sala.jogadores[i].SocketID);
+              console.log(this.sala.jogadores[i].ControladoComputador);
               this.io
                 .to(this.sala.jogadores[i].SocketID)
                 .emit("pronto-comecar", maoInicial, tmp);
@@ -171,14 +173,14 @@ export class Jogo {
     } else if (this.turnoAtual < 0) {
       this.turnoAtual = this.ordemJogadas.length - 1;
     }
-    let podeJogarCarta = false;
+    let podeCarta = false;
     let turno: ComecoTurno = {
       jogadorId: this.turnoAtual,
       cartas: [],
     };
     /**Checa se alguma carta já foi jogada*/
     if (this.descarte.cartaNoTopo() == undefined) {
-      podeJogarCarta = true;
+      podeCarta = true;
     } else {
       /**checa se precisa comprar alguma carta */
       if (this.temQueComprar) {
@@ -240,13 +242,13 @@ export class Jogo {
         let carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
           .Mao[i];
         if (carta.podeJogar(this.descarte.cartaNoTopo()!)) {
-          podeJogarCarta = true;
+          podeCarta = true;
         }
       }
     }
 
     /**Se o jogador precisar comprar uma carta, compra */
-    if (!podeJogarCarta) {
+    if (!podeCarta) {
       let carta = this.baralho.comprarCarta();
       this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao.push(
         carta
@@ -273,6 +275,7 @@ export class Jogo {
      */
     turno.cartas.forEach((carta) => turnoOutros.cartas.push(new Carta()));
 
+    console.log(this.turnoAtual);
     /**
      * Checa para ver se o jogador do turno atual é um computador,
      * caso não seja envia a carta comprada ao jogador do turno atual
@@ -580,6 +583,7 @@ export class Jogo {
       carta = new Carta();
       carta.Cor = COR.SEMCOR;
       carta.Valor = VALOR.SEM_VALOR;
+      console.log(`carta nula id do jogador: ${jogadorId}`);
     }
 
     let jogada: Jogada = {
@@ -719,15 +723,16 @@ export class Jogo {
             this.comecarTurno();
           } else if (this.aguardaComecaTurno) {
             this.aguardaComecaTurno = false;
+            this.aguardaEscolhaCor = true;
             this.io.to(this.sala.name).emit("comecar-jogada", this.turnoAtual);
             this.jogadaComputador();
           } else if (this.aguardaEscolhaCor) {
-            console.log("aguardando a escolha de cor");
             this.aguardaEscolhaCor = false;
           } else if (this.aguardaJogada) {
             this.aguardaJogada = false;
             this.turnoAtual += this.incrementoTurno;
             if (this.turnoAtual > this.ordemJogadas.length - 1) {
+              console.log("mudou de turno");
               this.turnoAtual = 0;
             } else if (this.turnoAtual < 0) {
               this.turnoAtual = this.ordemJogadas.length - 1;

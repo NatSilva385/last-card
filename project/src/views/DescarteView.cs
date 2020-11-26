@@ -19,6 +19,10 @@ public class DescarteView : Spatial
     /// <typeparam name="CartaView"></typeparam>
     /// <returns></returns>
     private List<CartaView> cartasDescartadas = new List<CartaView>();
+
+    private bool moveCartasBaralho = false;
+
+    public BaralhoView Baralho { get; set; }
     public override void _Ready()
     {
 
@@ -62,11 +66,42 @@ public class DescarteView : Spatial
         cartasDescartadas.Add(carta);
     }
 
+    public void moverCartasBaralho()
+    {
+        int ultimoIndice = cartasDescartadas.Count - 1;
+        CartaView ultimaCarta = cartasDescartadas[ultimoIndice];
+        cartasDescartadas.Remove(ultimaCarta);
+        int tamanho = cartasDescartadas.Count;
+        var tween = GetNode<Tween>("Tween");
+        var rot = new Vector3(90, 0, 180);
+        float delay = 0;
+        for (int i = tamanho - 1; i >= 0; i--)
+        {
+            CartaView tmp = cartasDescartadas[i];
+            cartasDescartadas.Remove(tmp);
+            tween.InterpolateProperty(tmp, "translation", tmp.Translation, Baralho.Translation, 0.5f, Tween.TransitionType.Quart, Tween.EaseType.InOut, delay);
+            tween.InterpolateProperty(tmp, "rotation_degrees", tmp.RotationDegrees, rot, 0.5f, Tween.TransitionType.Linear, Tween.EaseType.InOut, delay);
+            delay += 0.08f;
+            Baralho.addCarta(tmp);
+        }
+        moveCartasBaralho = true;
+        tween.Start();
+    }
+
 
 
     private void _on_Tween_tween_all_completed()
     {
-        Jogo.terminouAnimacaoJogada();
+        if (moveCartasBaralho)
+        {
+            moveCartasBaralho = false;
+            Jogo.terminarEncherBaralho();
+        }
+        else
+        {
+            Jogo.terminouAnimacaoJogada();
+        }
+
     }
 
 }

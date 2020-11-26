@@ -36,6 +36,7 @@ public class JogoView : Spatial
 
         descarte = GetNode<DescarteView>("Descarte");
         descarte.Jogo = this;
+        descarte.Baralho = baralho;
 
         areaMensagens = GetNode<AreaMensagens>("AreaMensagens");
 
@@ -206,11 +207,12 @@ public class JogoView : Spatial
         Client.On("comecar-jogada", async response =>
          {
              var carta = descarte.ultimaCarta();
+             int turno = response.GetValue<int>();
              if (carta == null)
              {
                  PodeJogar = true;
              }
-             else
+             else if (turno == jogadorPosicao)
              {
                  if (ordemJogada[jogadorPosicao].podeJogar(carta))
                  {
@@ -269,6 +271,12 @@ public class JogoView : Spatial
             descarte.ultimaCartaView().Carta = carta;
 
             aguardarAnimacaoCompra();
+        });
+
+        Client.On("mover-descarte-baralho", response =>
+        {
+            GD.Print("Recebeu a notificação de mover-descarte-baralho");
+            descarte.moverCartasBaralho();
         });
     }
 
@@ -349,6 +357,15 @@ public class JogoView : Spatial
     public void animarCarta(CartaView carta)
     {
         descarte.addCarta(carta);
+    }
+
+    public async void terminarEncherBaralho()
+    {
+        Jogada jogada = new Jogada();
+        jogada.carta = null;
+        jogada.jogadorId = jogadorPosicao;
+        jogada.sala = NumeroSala;
+        await Client.EmitAsync("mover-descarte-baralho", NumeroSala);
     }
 
 
