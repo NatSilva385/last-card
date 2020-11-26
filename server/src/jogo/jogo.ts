@@ -192,7 +192,9 @@ export class Jogo {
         ) {
           if (
             this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
-              .Valor == VALOR.MAIS_DOIS
+              .Valor == VALOR.MAIS_DOIS ||
+            this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
+              .Valor == VALOR.CORINGA_MAIS_QUATRO
           ) {
             impede = true;
           }
@@ -305,7 +307,9 @@ export class Jogo {
           ) {
             if (
               this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
-                .Valor == VALOR.MAIS_DOIS
+                .Valor == VALOR.MAIS_DOIS ||
+              this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id].Mao[x]
+                .Valor == VALOR.CORINGA_MAIS_QUATRO
             ) {
               carta = this.sala.jogadores[this.ordemJogadas[this.turnoAtual].id]
                 .Mao[x];
@@ -360,6 +364,9 @@ export class Jogo {
       } else if (carta.Valor == VALOR.MAIS_DOIS) {
         this.temQueComprar = true;
         this.qtdeCartasComprar += 2;
+      } else if (carta.Valor == VALOR.CORINGA_MAIS_QUATRO) {
+        this.temQueComprar = true;
+        this.qtdeCartasComprar += 4;
       }
 
       /**transmite a jogada para os outros jogadores */
@@ -486,7 +493,10 @@ export class Jogo {
       this.sala.jogadores[this.ordemJogadas[jogadorId].id].possuiCarta(carta)
     ) {
       if (this.temQueComprar) {
-        if (carta.Valor != VALOR.MAIS_DOIS) {
+        if (
+          carta.Valor != VALOR.MAIS_DOIS &&
+          carta.Valor != VALOR.CORINGA_MAIS_QUATRO
+        ) {
           return false;
         }
       }
@@ -557,6 +567,9 @@ export class Jogo {
     } else if (carta.Valor == VALOR.MAIS_DOIS) {
       this.temQueComprar = true;
       this.qtdeCartasComprar += 2;
+    } else if (carta.Valor == VALOR.CORINGA_MAIS_QUATRO) {
+      this.temQueComprar = true;
+      this.qtdeCartasComprar += 4;
     }
 
     this.aguardando = false;
