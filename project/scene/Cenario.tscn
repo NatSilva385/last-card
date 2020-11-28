@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [sub_resource type="ProceduralSky" id=1]
 sky_top_color = Color( 0.211765, 0.313726, 0.552941, 1 )
@@ -16,6 +16,13 @@ ambient_light_color = Color( 0.501961, 0.501961, 0.501961, 1 )
 ambient_light_energy = 3.0
 ambient_light_sky_contribution = 0.3
 
+[sub_resource type="CubeMesh" id=3]
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0.203922, 0.141176, 0.141176, 1 )
+metallic = 0.4
+roughness = 0.77
+
 [node name="Cenario" type="Spatial"]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
@@ -23,3 +30,8 @@ environment = SubResource( 2 )
 
 [node name="DirectionalLight" type="DirectionalLight" parent="WorldEnvironment"]
 transform = Transform( 1, 0, 0, 0, -0.819152, 0.573577, 0, -0.573577, -0.819152, 0, 0, 0 )
+
+[node name="MeshInstance" type="MeshInstance" parent="."]
+transform = Transform( 5.51307, 0, 0, 0, 1, 0, 0, 0, 4.58659, 0, 0, 0 )
+mesh = SubResource( 3 )
+material/0 = SubResource( 4 )

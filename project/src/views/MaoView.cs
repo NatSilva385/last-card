@@ -1,10 +1,14 @@
 using Godot;
 using System;
 using System.Collections.Generic;
-
+using project.src.models;
 public class MaoView : Spatial
 {
     public JogoView Jogo { get; set; }
+
+    public string ID { get; set; }
+
+    public bool TerminouAnimacao { get; set; }
 
     [Export]
     public float larguraCarta = 1.4f;
@@ -16,15 +20,53 @@ public class MaoView : Spatial
     public float distanciaCartas = 0.001f;
     private List<CartaView> handCartas = new List<CartaView>();
 
+    public bool podeJogar(Carta carta)
+    {
+        for (int i = 0; i < handCartas.Count; i++)
+        {
+            if (handCartas[i].Carta.podeJogar(carta))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void addCartas(List<CartaView> cartas)
+    {
+        TerminouAnimacao = false;
+        int lastIndice = handCartas.Count - 1;
+        float delay = 0;
+        for (int i = 0; i < cartas.Count; i++)
+        {
+            handCartas.Add(cartas[i]);
+            cartas[i].Jogo = Jogo;
+        }
+        var novasPosicoes = calculaPosicoes();
+        var rotacao = this.RotationDegrees;
+        var tween = GetNode<Tween>("Tween");
+        for (int i = 0; i < handCartas.Count; i++)
+        {
+
+            tween.InterpolateProperty(handCartas[i], "translation", handCartas[i].Translation, novasPosicoes[i], 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut, delay);
+            tween.InterpolateProperty(handCartas[i], "rotation_degrees", handCartas[i].RotationDegrees, rotacao, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut, delay);
+            if (i >= lastIndice)
+            {
+                delay += 0.2f;
+            }
+        }
+        tween.Start();
+    }
+
     public void addCarta(CartaView carta)
     {
         handCartas.Add(carta);
         var novasPosicoes = calculaPosicoes();
+        var rotacao = this.RotationDegrees;
         var tween = GetNode<Tween>("Tween");
         for (int i = 0; i < handCartas.Count; i++)
         {
             tween.InterpolateProperty(handCartas[i], "translation", handCartas[i].Translation, novasPosicoes[i], 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
-            tween.InterpolateProperty(handCartas[i], "rotation_degrees", handCartas[i].RotationDegrees, Vector3.Zero, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
+            tween.InterpolateProperty(handCartas[i], "rotation_degrees", handCartas[i].RotationDegrees, rotacao, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
         }
         tween.Start();
     }
@@ -60,7 +102,53 @@ public class MaoView : Spatial
     }
     public override void _Ready()
     {
+        GetNode<MeshInstance>("seta").Visible = false;
+    }
 
+    private void _on_Tween_tween_all_completed()
+    {
+        TerminouAnimacao = true;
+    }
+
+    public void removeCarta(Carta carta)
+    {
+        CartaView cartaView = null;
+        for (int i = 0; i < handCartas.Count; i++)
+        {
+            if (handCartas[i].Carta.Cor == carta.Cor && handCartas[i].Carta.Valor == carta.Valor)
+            {
+                cartaView = handCartas[i];
+            }
+        }
+        if (cartaView == null)
+        {
+            var rnd = new RandomNumberGenerator();
+            rnd.Randomize();
+            var i = rnd.RandiRange(0, handCartas.Count - 1);
+            cartaView = handCartas[i];
+            cartaView.Carta = carta;
+        }
+        GD.Print(cartaView);
+        handCartas.Remove(cartaView);
+        organizar();
+
+        Jogo.animarCarta(cartaView);
+    }
+
+    private void organizar()
+    {
+        TerminouAnimacao = false;
+        int lastIndice = handCartas.Count - 1;
+        var novasPosicoes = calculaPosicoes();
+        var rotacao = this.RotationDegrees;
+        var tween = GetNode<Tween>("Tween");
+        for (int i = 0; i < handCartas.Count; i++)
+        {
+
+            tween.InterpolateProperty(handCartas[i], "translation", handCartas[i].Translation, novasPosicoes[i], 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
+            tween.InterpolateProperty(handCartas[i], "rotation_degrees", handCartas[i].RotationDegrees, rotacao, 0.5f, Tween.TransitionType.Sine, Tween.EaseType.InOut);
+        }
+        tween.Start();
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.

@@ -3,6 +3,10 @@ using System;
 using project.src.models;
 using System.Collections.Generic;
 
+
+/// <summary>
+/// Representa uma instancia visual de uma carta em jogo
+/// </summary>
 public class CartaView : Spatial
 {
     private Carta _carta;
@@ -21,6 +25,8 @@ public class CartaView : Spatial
     public Texture[] Difuses { get; set; }
 
     public Texture[] Normals { get; set; }
+
+    public JogoView Jogo { get; set; }
 
     public ShaderMaterial Frente
     {
@@ -50,5 +56,40 @@ public class CartaView : Spatial
 
     }
 
+    private void _on_Area_mouse_entered()
+    {
+        if (Jogo.TurnoDoJogador == true)
+        {
+            GetNode<VisualInstance>("mesh").Layers = 3;
+        }
+
+    }
+
+    private void _on_Area_mouse_exited()
+    {
+        if (Jogo.TurnoDoJogador)
+        {
+            GetNode<VisualInstance>("mesh").Layers = 1;
+        }
+
+    }
+
+    private void _on_Area_input_event(object camera, object @event, Vector3 click_position, Vector3 click_normal, int shape_idx)
+    {
+        if (@event is InputEventMouse e)
+        {
+            if (e.ButtonMask == (int)ButtonList.Left)
+            {
+                if (Jogo.TurnoDoJogador)
+                {
+                    if (Jogo.PodeJogar)
+                    {
+                        Jogo.jogarCarta(this);
+                    }
+                }
+
+            }
+        }
+    }
 
 }

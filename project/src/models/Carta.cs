@@ -3,13 +3,30 @@ namespace project.src.models
     public class Carta
     {
 
-
-        public COR Cor
+        public bool podeJogar(Carta carta)
         {
-            get;
-            set;
+            if (carta.Cor == this.Cor || carta.Valor == this.Valor)
+            {
+                return true;
+            }
+            if (this.Valor == VALOR.CORINGA || this.Valor == VALOR.CORINGA_MAIS_QUATRO)
+            {
+                return true;
+            }
+            return false;
         }
 
+        private COR _cor;
+        public COR Cor
+        {
+            get { return _cor; }
+            set { _cor = value; }
+        }
+
+        public void setCor(COR cor)
+        {
+            _cor = cor;
+        }
         private VALOR _valor;
         public VALOR Valor
         {

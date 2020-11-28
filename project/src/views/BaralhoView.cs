@@ -34,7 +34,7 @@ public class BaralhoView : Spatial
                         carta.Rotate(Vector3.Right, Mathf.Pi / 2);
                         carta.Rotate(Vector3.Up, Mathf.Pi);
                         y = y + altura;
-
+                        carta.Jogo = Jogo;
                         baralhoCartas.Add(carta);
                         Jogo.AddChild(carta);
                     }
@@ -49,6 +49,10 @@ public class BaralhoView : Spatial
 
     }
 
+    public int tamanho()
+    {
+        return baralhoCartas.Count;
+    }
     private void _on_Area_input_event(object camera, object @event, Vector3 click_position, Vector3 click_normal, int shape_idx)
     {
         if (@event is InputEventMouse e)
@@ -65,6 +69,28 @@ public class BaralhoView : Spatial
                 baralhoCartas.Remove(ultimaCarta);
             }
         }
+    }
+
+    public List<CartaView> comprarCartas(List<Carta> cartas)
+    {
+        List<CartaView> cards = new List<CartaView>();
+
+        for (int i = 0; i < cartas.Count; i++)
+        {
+            int ultima = baralhoCartas.Count - 1;
+            CartaView ultimaCarta = baralhoCartas[ultima];
+            ultimaCarta.Carta = cartas[i];
+            cards.Add(ultimaCarta);
+            baralhoCartas.Remove(ultimaCarta);
+        }
+
+        return cards;
+    }
+
+    public void addCarta(CartaView carta)
+    {
+        carta.Carta = new project.src.models.Carta();
+        baralhoCartas.Add(carta);
     }
 
     //  // Called every frame. 'delta' is the elapsed time since the previous frame.
