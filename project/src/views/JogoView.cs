@@ -25,6 +25,9 @@ public class JogoView : Spatial
 
     Spatial corSelecao;
 
+    NotificaEncerrar notifica;
+
+    public Node CurrentScene { get; set; }
     Jogo jogo;
     public async override void _Ready()
     {
@@ -41,6 +44,11 @@ public class JogoView : Spatial
         areaMensagens = GetNode<AreaMensagens>("AreaMensagens");
 
         corSelecao = GetNode<Spatial>("cor_selecao");
+
+        notifica = GetNode<NotificaEncerrar>("NotificaEncerrar");
+
+        Viewport root = GetNode<Viewport>("/root");
+        CurrentScene = root.GetChild(root.GetChildCount() - 1);
 
         //adversario = GetNode<MaoView>("MaoJogador2");
         await Client.EmitAsync("terminou-carregar", NumeroSala);
@@ -278,6 +286,46 @@ public class JogoView : Spatial
             GD.Print("Recebeu a notificação de mover-descarte-baralho");
             descarte.moverCartasBaralho();
         });
+
+        Client.On("fim-jogo", async response =>
+        {
+            var vitorioso = response.GetValue<int>();
+            bool ganhou;
+
+            GD.Print("Chegou o valor " + vitorioso);
+            GD.Print("Minha posicao: " + jogadorPosicao);
+            if (vitorioso == jogadorPosicao)
+            {
+                ganhou = true;
+            }
+            else
+            {
+                ganhou = false;
+            }
+
+            var resp = await notifica.exibeMensagem(ganhou);
+
+            if (resp)
+            {
+                voltarMenuInicial();
+            }
+        });
+    }
+
+    private void voltarMenuInicial()
+    {
+        var nextScene = ResourceLoader.Load<PackedScene>("res://scene/TelaInicial.tscn");
+
+        //await Client.DisconnectAsync();
+
+        var telaInicia = nextScene.Instance() as FrmInicial;
+
+        GetNode("/root").AddChild(telaInicia);
+
+        //await Client.DisconnectAsync();
+        CurrentScene.Free();
+        CurrentScene = telaInicia;
+
     }
 
     public void init()

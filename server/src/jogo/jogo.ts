@@ -1,3 +1,5 @@
+import { table } from "console";
+import { isRegExp } from "util";
 import { v4 } from "uuid";
 import { Jogada, Sala } from "../main";
 import { Baralho } from "./baralho";
@@ -173,6 +175,10 @@ export class Jogo {
     } else if (this.turnoAtual < 0) {
       this.turnoAtual = this.ordemJogadas.length - 1;
     }
+    if (this.terminouJogo()) {
+      this.aguardando = true;
+      return;
+    }
     let podeCarta = false;
     let turno: ComecoTurno = {
       jogadorId: this.turnoAtual,
@@ -275,7 +281,6 @@ export class Jogo {
      */
     turno.cartas.forEach((carta) => turnoOutros.cartas.push(new Carta()));
 
-    console.log(this.turnoAtual);
     /**
      * Checa para ver se o jogador do turno atual é um computador,
      * caso não seja envia a carta comprada ao jogador do turno atual
@@ -294,6 +299,31 @@ export class Jogo {
     } else {
       this.io.to(this.sala.name).emit("comecar-turno", turnoOutros);
     }
+  }
+
+  terminouJogo(): boolean {
+    let posicao: number | undefined = undefined;
+    /**percorre a lista de jogadores para ver se algum terminou a quantidade de cartas na mão */
+    for (let i = 0; i < this.sala.jogadores.length; i++) {
+      /**caso encontre um jogador que a mão não tenha cartas salva essa posição e sai do laço */
+      if (this.sala.jogadores[i].Mao.length == 0) {
+        posicao = i;
+        break;
+      }
+    }
+    for (let i = 0; i < this.ordemJogadas.length; i++) {
+      if (this.ordemJogadas[i].id == posicao) {
+        posicao = i;
+        break;
+      }
+    }
+
+    /**checa se foi atribuido um valor à posição */
+    if (posicao != undefined) {
+      this.io.to(this.sala.name).emit("fim-jogo", posicao);
+      return true;
+    }
+    return false;
   }
 
   /**

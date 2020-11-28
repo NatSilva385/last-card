@@ -74,6 +74,7 @@ public class DescarteView : Spatial
         int tamanho = cartasDescartadas.Count;
         var tween = GetNode<Tween>("Tween");
         var rot = new Vector3(90, 0, 180);
+
         float delay = 0;
         for (int i = tamanho - 1; i >= 0; i--)
         {

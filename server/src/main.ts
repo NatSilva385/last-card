@@ -182,12 +182,15 @@ io.on("connection", (socket: Socket) => {
     let salasOcupadas = Object.keys(salas).map((key) => salas[key]);
     let i: number;
     let remove: number;
+    let salaEncontrada: string = "";
     let achou: boolean = false;
     for (i = 0; i < salasOcupadas.length; i++) {
       achou = false;
       for (let x = 0; x < salasOcupadas[i].qtdeUser; i++) {
         if (salasOcupadas[i].jogadores[x].SocketID == socket.id) {
           salasOcupadas[i].jogadores[x].ControladoComputador = true;
+          salaEncontrada = salasOcupadas[i].name;
+          salas[salaEncontrada].jogadores[x].ControladoComputador = true;
           achou = true;
           break;
         }
@@ -198,8 +201,8 @@ io.on("connection", (socket: Socket) => {
       }
     }
 
-    for (let x = 0; x < salasOcupadas[i].qtdeUser; x++) {
-      if (!salasOcupadas[i].jogadores[x].ControladoComputador) {
+    for (let x = 0; x < salas[salaEncontrada].maxNumUsers; x++) {
+      if (!salas[salaEncontrada].jogadores[x].ControladoComputador) {
         achou = false;
       }
     }
@@ -213,6 +216,7 @@ io.on("connection", (socket: Socket) => {
         name: "",
         qtdeUser: 0,
       };
+      console.log("excluindo a sala");
     }
   });
 });
