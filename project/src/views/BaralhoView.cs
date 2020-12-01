@@ -3,6 +3,10 @@ using System;
 using System.Collections.Generic;
 using project.src.models;
 using project.src.factory;
+
+/// <summary>
+/// Classe responsável por representar o baralho onde as cartas estão esperando para serem compradas
+/// </summary>
 public class BaralhoView : Spatial
 {
     private List<CartaView> baralhoCartas = new List<CartaView>();
