@@ -238,3 +238,4 @@ margin_bottom = 29.0
 [connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/txtSenha" to="CenterContainer/PanelContainer" method="_on_txtSenha_text_changed"]
 [connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer2/txtRSenha" to="CenterContainer/PanelContainer" method="_on_txtRSenha_text_changed"]
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/btnCadastrar" to="CenterContainer/PanelContainer" method="_on_btnCadastrar_pressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer2/HBoxContainer/btnVoltar" to="CenterContainer/PanelContainer" method="_on_btnVoltar_pressed"]

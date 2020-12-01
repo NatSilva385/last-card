@@ -64,6 +64,7 @@ public class FrmCadastro : PanelContainer
             {
                 erro.DialogText = "Usuário cadastrado com sucesso";
                 erro.Visible = true;
+                GetTree().ChangeScene("res://scene/NovoLogin.tscn");
             }
             else
             {
@@ -101,6 +102,10 @@ public class FrmCadastro : PanelContainer
     private void _on_txtRSenha_text_changed(string new_text)
     {
         rSenha = new_text;
+    }
+    private void _on_btnVoltar_pressed()
+    {
+        GetTree().ChangeScene("res://scene/NovoLogin.tscn");
     }
 
 }

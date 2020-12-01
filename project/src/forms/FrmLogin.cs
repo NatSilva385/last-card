@@ -16,8 +16,12 @@ public class FrmLogin : Control
 
     AcceptDialog erroDialog;
 
+    private FrmCadastro frmCadastro;
+
     private string email;
     private string senha;
+
+
 
     static readonly HttpClient client = new HttpClient();
     public override void _Ready()
@@ -81,6 +85,10 @@ public class FrmLogin : Control
         {
         }
 
+    }
+    private void _on_btnCadastrar_pressed()
+    {
+        GetTree().ChangeScene("res://scene/CadastroUsuario.tscn");
     }
 }
 

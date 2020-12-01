@@ -189,3 +189,4 @@ margin_bottom = 29.0
 [connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/txtEmail" to="." method="_on_txtEmail_text_changed"]
 [connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/txtSenha" to="." method="_on_txtSenha_text_changed"]
 [connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer3/CenterContainer/btnLogin" to="." method="_on_btnLogin_pressed"]
+[connection signal="pressed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/MarginContainer2/btnCadastrar" to="." method="_on_btnCadastrar_pressed"]
