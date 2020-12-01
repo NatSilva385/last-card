@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="Theme" id=1]
+
+[node name="WindowDialog" type="WindowDialog"]
+margin_right = 541.0
+margin_bottom = 384.0
+theme = SubResource( 1 )
+resizable = true

@@ -1,7 +1,8 @@
 import { table } from "console";
 import Knex from "knex";
 import crypto from "crypto";
-import { strict } from "assert";
+import { rejects, strict } from "assert";
+import { resolve } from "path";
 interface SaltedPassword {
   salt: string;
   hashedPassword: string;
@@ -78,5 +79,76 @@ export class UsuarioDb {
       .catch((err) => {
         console.log(err);
       });
+  }
+
+  async emailExiste(email: string): Promise<boolean> {
+    let promise = new Promise<boolean>((resolve, rejects) => {
+      this.db<Usuario>("usuario")
+        .where("email", email)
+        .select()
+        .then((rows) => {
+          if (rows.length > 0) {
+            return resolve(true);
+          }
+          return resolve(false);
+        })
+        .catch((err) => {
+          throw err;
+        });
+    });
+    return promise;
+  }
+
+  async campoExiste(campo: string, value: any): Promise<boolean> {
+    let promise = new Promise<boolean>((resolve, rejects) => {
+      this.db<Usuario>("usuario")
+        .where(campo, value)
+        .select()
+        .then((rows) => {
+          if (rows.length > 0) {
+            return resolve(true);
+          }
+          return resolve(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          throw err;
+        });
+    });
+    return promise;
+  }
+
+  async findOne(email: string): Promise<Usuario | null> {
+    let promise = new Promise<Usuario | null>((resolve, rejects) => {
+      this.db<Usuario>("usuario")
+        .where("email", email)
+        .select()
+        .then((rows) => {
+          if (rows.length > 0) {
+            return resolve(rows[0]);
+          } else {
+            return resolve(null);
+          }
+        });
+    });
+
+    return promise;
+  }
+
+  async findUserById(id: number): Promise<Usuario | null> {
+    let promise = new Promise<Usuario | null>((resolve, rejects) => {
+      this.db<Usuario>("usuario")
+        .where("id", id)
+        .select()
+        .then((rows) => {
+          if (rows.length > 0) {
+            return resolve(rows[0]);
+          } else {
+            return resolve(null);
+          }
+        });
+    });
+
+    return promise;
   }
 }

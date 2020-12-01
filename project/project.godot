@@ -16,8 +16,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Last Card"
-run/main_scene="res://scene/Main.tscn"
-config/icon="res://icon.png"
+run/main_scene="res://scene/Tela Inicial.tscn"
 
 [rendering]
 

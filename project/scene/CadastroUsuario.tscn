@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://assets/fonts/roboto-regular-normal.tres" type="DynamicFont" id=1]
 [ext_resource path="res://assets/fonts/roboto-regular-titulo.tres" type="DynamicFont" id=2]
 [ext_resource path="res://src/forms/FrmCadastro.cs" type="Script" id=3]
+[ext_resource path="res://assets/texture/spinner/block/block-spinner.tres" type="Texture" id=4]
 
 [node name="CadastroUsuario" type="Control"]
 anchor_right = 1.0
@@ -166,6 +167,80 @@ margin_bottom = 39.0
 size_flags_horizontal = 3
 custom_fonts/font = ExtResource( 1 )
 text = "Voltar"
+
+[node name="LoadingDialog" type="PopupDialog" parent="CenterContainer"]
+visible = true
+margin_left = 512.0
+margin_top = 300.0
+margin_right = 512.0
+margin_bottom = 300.0
+
+[node name="Panel" type="Panel" parent="CenterContainer/LoadingDialog"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -87.5
+margin_top = -91.5
+margin_right = 87.5
+margin_bottom = 91.5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/LoadingDialog/Panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer/LoadingDialog/Panel/MarginContainer"]
+margin_right = 175.0
+margin_bottom = 183.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="CenterContainer/LoadingDialog/Panel/MarginContainer/VBoxContainer"]
+margin_right = 175.0
+margin_bottom = 71.0
+custom_constants/margin_right = 10
+custom_constants/margin_top = 20
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 20
+
+[node name="Label" type="Label" parent="CenterContainer/LoadingDialog/Panel/MarginContainer/VBoxContainer/MarginContainer"]
+margin_left = 10.0
+margin_top = 20.0
+margin_right = 165.0
+margin_bottom = 51.0
+text = "Conecatando com o servidor"
+align = 1
+autowrap = true
+
+[node name="CenterContainer" type="CenterContainer" parent="CenterContainer/LoadingDialog/Panel/MarginContainer/VBoxContainer"]
+margin_top = 75.0
+margin_right = 175.0
+margin_bottom = 175.0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="CenterContainer/LoadingDialog/Panel/MarginContainer/VBoxContainer/CenterContainer"]
+margin_left = 37.0
+margin_right = 137.0
+margin_bottom = 100.0
+rect_min_size = Vector2( 100, 100 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 4 )
+
+[node name="SemPreencherDialog" type="AcceptDialog" parent="."]
+margin_left = 466.825
+margin_top = 274.175
+margin_right = 549.825
+margin_bottom = 332.175
+popup_exclusive = true
 [connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer/txtEmail" to="CenterContainer/PanelContainer" method="_on_txtEmail_text_changed"]
 [connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/VBoxContainer2/txtNome" to="CenterContainer/PanelContainer" method="_on_txtNome_text_changed"]
 [connection signal="text_changed" from="CenterContainer/PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/VBoxContainer/txtSenha" to="CenterContainer/PanelContainer" method="_on_txtSenha_text_changed"]

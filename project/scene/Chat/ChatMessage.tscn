@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://src/forms/ChatMessage.cs" type="Script" id=1]
+
+[node name="ChatMessage" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="lblNome" type="Label" parent="HBoxContainer" groups=[
+"tool",
+]]
+margin_top = 293.0
+margin_right = 1.0
+margin_bottom = 307.0
+custom_colors/font_color = Color( 0, 0, 0, 1 )
+autowrap = true
+
+[node name="lblMessage" type="Label" parent="HBoxContainer" groups=[
+"tool",
+]]
+margin_left = 5.0
+margin_top = 293.0
+margin_right = 1024.0
+margin_bottom = 307.0
+size_flags_horizontal = 3
+autowrap = true
