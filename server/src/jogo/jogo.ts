@@ -1,7 +1,9 @@
 import { table } from "console";
 import { isRegExp } from "util";
 import { v4 } from "uuid";
+import { db } from "../db";
 import { Jogada, Sala } from "../main";
+import { Usuario, UsuarioDb } from "../usuario";
 import { Baralho } from "./baralho";
 import { Carta, COR, VALOR } from "./carta";
 import { Descarte } from "./descarte";
@@ -63,7 +65,7 @@ export class Jogo {
               i <= this.sala.maxNumUsers;
               i++
             ) {
-              this.sala.jogadores.push(new Jogador(v4(), ""));
+              this.sala.jogadores.push(new Jogador(v4(), "", -1));
               this.sala.qtdeUser++;
             }
             for (let i = 0; i < this.sala.qtdeUser; i++) {
@@ -320,6 +322,23 @@ export class Jogo {
 
     /**checa se foi atribuido um valor à posição */
     if (posicao != undefined) {
+      let usuarioDB = new UsuarioDb(db);
+      for (let i = 0; i < this.sala.jogadores.length; i++) {
+        if (!this.sala.jogadores[i].ControladoComputador) {
+          let usuario: Usuario = { email: "", nUsuario: "" };
+          usuario.id = this.sala.jogadores[i].Id;
+          console.log(i);
+          console.log(this.ordemJogadas[posicao].id);
+          if (i == this.ordemJogadas[posicao].id) {
+            usuario.experiencia = 0;
+            usuario.nivel = 1;
+          } else {
+            usuario.experiencia = 1;
+            usuario.nivel = 0;
+          }
+          usuarioDB.updateUserFimJogo(usuario);
+        }
+      }
       this.io.to(this.sala.name).emit("fim-jogo", posicao);
       return true;
     }

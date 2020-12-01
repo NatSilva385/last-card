@@ -2,20 +2,59 @@ using Godot;
 using System;
 using SocketIOClient;
 using project.src.models;
+using System.Net.Http;
+using System.Text.Json;
 public class FrmInicial : Control
 {
 
     private string numeroDaSala;
     private SocketIO client;
 
+    public Usuario Usuario { get; set; }
+    Label lblDerrotas;
+    Label lblVitorias;
+    Label lblJogador;
+
     private WindowDialog loadDialog;
+
+    static readonly HttpClient cliente = new HttpClient();
     private string id;
     public override void _Ready()
     {
         loadDialog = GetNode<WindowDialog>("LoadingDialog");
+        var dados = GetTree().GetNodesInGroup("dados");
+        foreach (var dado in dados)
+        {
+            if ((dado as Node).Name == "lblDerrotas")
+            {
+                lblDerrotas = dado as Label;
+            }
+            else if ((dado as Node).Name == "lblVitorias")
+            {
+                lblVitorias = dado as Label;
+            }
+            else if ((dado as Node).Name == "lblJogador")
+            {
+                lblJogador = dado as Label;
+            }
+        }
         //Viewport root = GetTree().GetRoot();
         Viewport root = GetNode<Viewport>("/root");
         CurrentScene = root.GetChild(root.GetChildCount() - 1);
+        carregaDados();
+
+    }
+
+    private async void carregaDados()
+    {
+        var response = await cliente.GetAsync($"http://localhost:3000/{Usuario.id}");
+
+        string message = await response.Content.ReadAsStringAsync();
+
+        Usuario = JsonSerializer.Deserialize<Usuario>(message);
+        lblDerrotas.Text = Usuario.experiencia.ToString();
+        lblVitorias.Text = Usuario.nivel.ToString();
+        lblJogador.Text = Usuario.nUsuario;
     }
 
     public Node CurrentScene { get; set; }
@@ -40,7 +79,8 @@ public class FrmInicial : Control
 
         NovoJogoReq newJogo = new NovoJogoReq();
 
-        newJogo.NomeJogador = "";
+        newJogo.NomeJogador = Usuario.nUsuario;
+        newJogo.Id = Usuario.id;
         newJogo.QtdeJogadores = 2;
 
         await client.EmitAsync("Novo-Jogador", newJogo);
@@ -60,14 +100,12 @@ public class FrmInicial : Control
         jogoView.Client = client;
         jogoView.NumeroSala = numeroDaSala;
         jogoView.ID = id;
+        jogoView.Usuario = Usuario;
         // Add it to the active scene, as child of root.
         GetNode("/root").AddChild(jogoView);
-        //GetTree().GetRoot().AddChild(jogoView);
 
-        // Optionally, to make it compatible with the SceneTree.change_scene() API.
         CurrentScene.Free();
         CurrentScene = jogoView;
-        //GetTree().SetCurrentScene(jogoView);
 
     }
 

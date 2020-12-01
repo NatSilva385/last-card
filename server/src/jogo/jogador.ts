@@ -66,9 +66,18 @@ export class Jogador {
     this._aguardaNovoBaralho = value;
   }
 
-  constructor(socketID: string, name: string) {
+  private _id: number;
+  public get Id(): number {
+    return this._id;
+  }
+  public set Id(value: number) {
+    this._id = value;
+  }
+
+  constructor(socketID: string, name: string, id: number) {
     this._socketID = socketID;
     this._name = name;
+    this._id = id;
   }
 
   possuiCarta(carta: Carta): boolean {

@@ -29,6 +29,8 @@ public class JogoView : Spatial
 
     public Node CurrentScene { get; set; }
     Jogo jogo;
+
+    public Usuario Usuario { get; set; }
     public async override void _Ready()
     {
         baralho = GetNode<BaralhoView>("Baralho");
@@ -307,6 +309,7 @@ public class JogoView : Spatial
 
             if (resp)
             {
+                await Client.DisconnectAsync();
                 voltarMenuInicial();
             }
         });
@@ -319,6 +322,7 @@ public class JogoView : Spatial
         //await Client.DisconnectAsync();
 
         var telaInicia = nextScene.Instance() as FrmInicial;
+        telaInicia.Usuario = Usuario;
 
         GetNode("/root").AddChild(telaInicia);
 

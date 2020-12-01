@@ -16,7 +16,9 @@ _global_script_class_icons={
 [application]
 
 config/name="Last Card"
-run/main_scene="res://scene/TelaInicial.tscn"
+run/main_scene="res://scene/NovoLogin.tscn"
+run/disable_stdout=true
+run/disable_stderr=true
 config/icon="res://icon.png"
 
 [rendering]
