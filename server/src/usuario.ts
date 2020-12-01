@@ -151,4 +151,25 @@ export class UsuarioDb {
 
     return promise;
   }
+
+  updateUserFimJogo(usuario: Usuario) {
+    this.findUserById(usuario.id!).then((user) => {
+      if (user) {
+        user.nivel! += usuario.nivel!;
+        console.log("nivel adicionado: " + usuario.nivel);
+        console.log("nivel: " + user.nivel);
+        user.experiencia! += usuario.experiencia!;
+        this.db<Usuario>("usuario")
+          .update("nivel", user.nivel)
+          .where("id", usuario.id)
+          .then((rsp) => {
+            console.log(rsp);
+          });
+        this.db<Usuario>("usuario")
+          .update("experiencia", user.experiencia)
+          .where("id", usuario.id)
+          .then((rsp) => {});
+      }
+    });
+  }
 }

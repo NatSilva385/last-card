@@ -14,29 +14,105 @@ __meta__ = {
 [node name="PanelContainer" type="PanelContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
-[node name="CenterContainer" type="CenterContainer" parent="PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 1017.0
 margin_bottom = 593.0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/CenterContainer"]
-margin_left = 415.0
-margin_top = 271.0
-margin_right = 595.0
-margin_bottom = 315.0
+[node name="CenterContainer2" type="CenterContainer" parent="PanelContainer/VBoxContainer"]
+margin_right = 1010.0
+margin_bottom = 14.0
 
-[node name="btnBuscarDois" type="Button" parent="PanelContainer/CenterContainer/VBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/CenterContainer2"]
+margin_left = 445.0
+margin_right = 565.0
+margin_bottom = 14.0
+
+[node name="lblJogador" type="Label" parent="PanelContainer/VBoxContainer/CenterContainer2/MarginContainer" groups=[
+"dados",
+]]
+margin_right = 120.0
+margin_bottom = 14.0
+text = "Bem Vindo Jogador"
+
+[node name="CenterContainer" type="CenterContainer" parent="PanelContainer/VBoxContainer"]
+margin_top = 18.0
+margin_right = 1010.0
+margin_bottom = 550.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer/CenterContainer"]
+margin_left = 415.0
+margin_top = 244.0
+margin_right = 595.0
+margin_bottom = 288.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/CenterContainer/MarginContainer"]
+margin_right = 180.0
+margin_bottom = 44.0
+
+[node name="btnBuscarDois" type="Button" parent="PanelContainer/VBoxContainer/CenterContainer/MarginContainer/VBoxContainer"]
 margin_right = 180.0
 margin_bottom = 20.0
 text = "Buscar Partida 2 Jogadores"
 
-[node name="btnBuscarQuatro" type="Button" parent="PanelContainer/CenterContainer/VBoxContainer"]
+[node name="btnBuscarQuatro" type="Button" parent="PanelContainer/VBoxContainer/CenterContainer/MarginContainer/VBoxContainer"]
 margin_top = 24.0
 margin_right = 180.0
 margin_bottom = 44.0
 text = "Buscar Partida 4 Jogadores"
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/VBoxContainer"]
+margin_top = 554.0
+margin_right = 1010.0
+margin_bottom = 586.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/MarginContainer"]
+margin_right = 1010.0
+margin_bottom = 32.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+margin_right = 1010.0
+margin_bottom = 14.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2"]
+margin_right = 153.0
+margin_bottom = 14.0
+text = "Quantidade de Derrotas"
+
+[node name="lblDerrotas" type="Label" parent="PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer2" groups=[
+"dados",
+]]
+margin_left = 157.0
+margin_right = 157.0
+margin_bottom = 14.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/MarginContainer/VBoxContainer"]
+margin_top = 18.0
+margin_right = 1010.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+margin_right = 151.0
+margin_bottom = 14.0
+text = "Quantidade de VItorias:"
+
+[node name="lblVitorias" type="Label" parent="PanelContainer/VBoxContainer/MarginContainer/VBoxContainer/HBoxContainer" groups=[
+"dados",
+]]
+margin_left = 155.0
+margin_right = 155.0
+margin_bottom = 14.0
 
 [node name="LoadingDialog" type="WindowDialog" parent="."]
 anchor_left = 0.5
@@ -80,4 +156,4 @@ margin_right = 144.0
 margin_bottom = 107.0
 rect_min_size = Vector2( 100, 100 )
 texture = ExtResource( 1 )
-[connection signal="pressed" from="PanelContainer/CenterContainer/VBoxContainer/btnBuscarDois" to="." method="_on_btnBuscarDois_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/CenterContainer/MarginContainer/VBoxContainer/btnBuscarDois" to="." method="_on_btnBuscarDois_pressed"]

@@ -2,7 +2,6 @@ using Godot;
 using System;
 using System.Text.Json;
 using System.Net.Http;
-using System.Text.RegularExpressions;
 using project.src.models;
 /// <summary>
 /// Classe responsável por receber os dados do cliente para o
@@ -73,6 +72,15 @@ public class FrmLogin : Control
                 GD.Print("OK");
                 string message = await response.Content.ReadAsStringAsync();
                 Usuario user = JsonSerializer.Deserialize<Usuario>(message);
+                var cena = ResourceLoader.Load<PackedScene>("res://scene/TelaInicial.tscn");
+                FrmInicial frmInicial = cena.Instance() as FrmInicial;
+                frmInicial.Usuario = user;
+                Viewport root = GetNode<Viewport>("/root");
+                Node currentScene = root.GetChild(root.GetChildCount() - 1);
+                GetNode("/root").AddChild(frmInicial);
+
+                currentScene.Free();
+                currentScene = frmInicial;
             }
             else
             {
@@ -83,6 +91,9 @@ public class FrmLogin : Control
         }
         catch (Exception e)
         {
+            carregando.Visible = false;
+            erroDialog.DialogText = e.Message;
+            erroDialog.Visible = true;
         }
 
     }

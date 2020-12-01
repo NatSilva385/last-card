@@ -46,7 +46,7 @@ public class FrmCadastro : PanelContainer
     }
     private async void _on_btnCadastrar_pressed()
     {
-        Usuario usuario = new Usuario();
+        UsuarioCadastro usuario = new UsuarioCadastro();
         usuario.email = email;
         usuario.nUsuario = nUsuario;
         usuario.password = senha;
@@ -110,7 +110,7 @@ public class FrmCadastro : PanelContainer
 
 }
 
-class Usuario
+class UsuarioCadastro
 {
     public string email { get; set; }
 
