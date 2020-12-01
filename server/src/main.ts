@@ -4,11 +4,15 @@ import express from "express";
 import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Socket } from "socket.io";
+import session from "express-session";
 import { v4 } from "uuid";
 import { Jogo } from "./jogo/jogo";
 import { getDefaultSettings } from "http2";
 import { Jogador } from "./jogo/jogador";
 import { Carta } from "./jogo/carta";
+
+const passport = require("passport");
+require("./config/auth");
 
 let app = express();
 
@@ -19,6 +23,18 @@ const port = 3000;
 
 var usuarioDb = new UsuarioDb(db);
 const server = createServer(app);
+
+app.use(
+  session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
 var io = require("socket.io")(server);
 
 app.use(express.static("public"));
@@ -29,11 +45,37 @@ app.post("/usuarios/create", jsonParser, (req, res) => {
     nUsuario: req.body.nUsuario,
     hash: req.body.password,
   };
-  console.log(req.body);
 
-  usuarioDb.adicionarUsuario(usuario);
+  if (req.body == {}) {
+    return res.status(400).send("bad request");
+  }
 
-  res.status(201).send("Usuário inserido com sucesso");
+  let cadastra = true;
+  usuarioDb.campoExiste("email", usuario.email).then((exist) => {
+    if (exist) {
+      res.status(403).send("email");
+    } else {
+      usuarioDb.campoExiste("nUsuario", usuario.nUsuario).then((exist) => {
+        if (exist) {
+          res.status(403).send("nome");
+        } else {
+          usuarioDb.adicionarUsuario(usuario);
+
+          res.status(201).send("Usuário inserido com sucesso");
+        }
+      });
+    }
+  });
+});
+
+app.post("/login", (req, res, next) => {
+  passport.authenticate("login", {
+    successRedirect: "/dashboard",
+  })(req, res, next);
+});
+
+app.get("/dashboard", (req, res, next) => {
+  res.send(req.user);
 });
 
 app.get("/", (req, res) => {
